@@ -1,0 +1,118 @@
+.pagger * {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pagger .fl {
+  float: left;
+}
+.pagger {
+  height: 30px;
+  margin: 20px 0px 0px auto;
+  text-align: right;
+  font-family: PingFangSC-Regular;
+	font-size: 12px;
+	color: #303133;
+	display: block;
+  position: relative;
+}
+.pagger .tableBox{
+	padding-bottom: 0px;
+}
+.pagger .pagger-box{
+  display: inline-block;
+}
+
+.pagger button {
+   padding: 0 5px;
+  height:32px;
+  background:rgba(255,255,255,1);
+  border:1px solid rgba(213, 213, 213, 1);
+  float: left;
+  cursor: pointer;
+}
+.pagger .first-page{
+  margin-right: 15px;
+}
+.pagger .last-page{
+  margin-left: 15px;
+}
+.pagger .first-page,
+.pagger .last-page {
+  width:66px;
+  height:32px;
+  background:rgba(255,255,255,1);
+  border:1px solid rgba(213, 213, 213, 1)
+}
+.pagger .pageWrap {
+  height: 40px;
+  float: left;
+  overflow: hidden;
+}
+.pagger .pageWrap ul {
+  width: 999999999px;
+  height: 40px;
+  float: left;
+}
+.pagger .pageWrap ul li {
+  width:38px;
+  height:30px;
+  background:rgba(255,255,255,1);
+  border:1px solid rgba(213, 213, 213, 1);
+  pagger-sizing: border-pagger;
+  cursor: pointer;
+  float: left;
+  text-align: center;
+  line-height: 32px;
+}
+.pagger .pageWrap ul .sel-page {
+  width:38px;
+  height:30px;
+    background:linear-gradient(90deg,rgba(75,125,245,1),rgba(88,166,248,1));
+    color: #fff;
+}
+/*.pagger .pageWrap ul li:hover{*/
+  /*background:linear-gradient(90deg,rgba(75,125,245,1),rgba(88,166,248,1));*/
+    /*color: #fff;*/
+/*}*/
+.pagger .jump-text {
+  width:20px;
+  height:30px;
+  background:rgba(255,255,255,1);
+  border:1px solid rgba(213, 213, 213, 1);
+  text-align: center;
+  margin: 0 5px;
+  float: left;
+}
+.pagger .jump-button {
+  margin: 0;
+  float: left;
+}
+.pagger .total-count {
+  margin-left: 10px;
+  float: left;
+  font-size: 14px;
+}
+.pagger .total-pages {
+    margin-left: 10px;
+    float: left;
+    font-size: 14px;
+    position: absolute;
+  left: 0;
+}
+.pagger .turnPage {
+  width: 66px;
+  height: 32px;
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(213, 213, 213, 1);
+}
+.pagger button:focus{
+  outline: none;
+}
+.pagger button:active{
+  color: #0078FF;
+  border-color: #0078FF !important;
+}
+.pagger button[disabled]{
+  cursor: auto;
+}

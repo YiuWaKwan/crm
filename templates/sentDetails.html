@@ -1,0 +1,48 @@
+<!doctype html>
+
+<div class="panel sentDetails">
+    <div class="mask"></div>
+    <div class="loading" ng-if="!$parent.flag"><span class="loadingImg"></span>处理中，请稍等...</div>
+    <div class="contentPanel" ng-if="$parent.flag">
+        <div class="contentBody">
+            <div class="dialog_title tac"><label class="cw">群发详情</label><a ng-click="isHide_sD()"><span class="dialog_close"></span></a></div>
+            <div class="dialog_content">
+                <div class="detail_title"><span class="sent_create" ng-bind="$parent.sent_wxName">小玫瑰</span> ，在<span ng-bind="$parent.create_time">2019-01-01</span>创建群发消息</div>
+                <div class="success_msg"><span class="sent_status" ng-if="$parent.failure_wxIds.length==0">状态正常</span></div>
+                <div class="failure_msg"><span class="sent_status" ng-if="$parent.failure_wxIds.length!=0">状态异常。异常原因：
+                    <span class="failure_reason" ng-bind="$parent.failure_remarks.join(',')">微信操作过于频繁，禁止群发信息</span></span>
+                </div>
+                <div class="success_friends" ng-if="$parent.success_wxIds.length > 0">
+                    <div><span class="icon_circle"></span>消息已发送<span class="success_count" ng-bind="$parent.success_wxIds.length">9</span>位好友:</div>
+                    <div class="friends_entity">
+                        <span ng-repeat="vo in $parent.receive_wxIds">
+                            <span ng-if="$parent.success_wxIds.indexOf(vo.wx_id) != -1" ng-bind="vo.wx_name + '、 '">
+                                秋秋、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="failure_friends" ng-if="$parent.failure_wxIds.length > 0">
+                    <div><span style="background: #E3403E;" class="icon_circle"></span>消息未发送到<span class="success_count" ng-bind="$parent.failure_wxIds.length">9</span>位好友:<a class="btn_resend" ng-click="resend()"><span ng-show="$parent.resend_flag" class="loadingImg"></span>重发信息</a></div>
+                    <div class="friends_entity">
+                        <span ng-repeat="vo in $parent.receive_wxIds">
+                            <span ng-if="$parent.failure_wxIds.indexOf(vo.wx_id) != -1" ng-bind="vo.wx_name + '、 '">
+                                奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱、匆匆、纷纷、奔跑的猪、臭流氓、程序员、小可爱
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="sent_body">
+                    <div>发送内容：</div>
+                    <div class="sent_content" ng-if="type == '1'" ng-bind-html="showFace(content)">春江潮水连海平，海上明月共潮生。 滟滟随波千万里，何处春江无月明！ 江流宛转绕芳甸，月照花林皆似霰； 空里流霜不觉飞，汀上白沙看不见。 江天一色无 纤尘，皎皎空中孤月轮。 江畔何人初见月？江月何年初照人？ 人生代代无穷已，江月年年只相似。</div>
+                    <div class="sent_content" ng-if="type == '2'" ng-bind-html="'附件：' + showFile(fileContent)">春江潮水连海平，海上明月共潮生。 滟滟随波千万里，何处春江无月明！ 江流宛转绕芳甸，月照花林皆似霰； 空里流霜不觉飞，汀上白沙看不见。 江天一色无 纤尘，皎皎空中孤月轮。 江畔何人初见月？江月何年初照人？ 人生代代无穷已，江月年年只相似。</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+</script>

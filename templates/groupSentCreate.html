@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>新建群发</title>
+
+    <style>
+        .wx_friends > span{
+            background:rgba(236,247,253,1);
+            border-radius:13px;
+            padding: 3.5px 19px;
+            margin: 5px 15px 10px 0px;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+        .wx_friends > span > i{
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            top:-4px;
+            right: 4px;
+            background: url("/static/img/icon_guanbi_nor@2x.png") no-repeat center center;
+        }
+        .wx_friends > span:hover > i{
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body class="bg m16" style="height: calc(100% - 32px)">
+<div class="mp0" style="height: 100%;" ng-controller="createController" ng-init="init()">
+    <div><p><span>聊天</span><span> / </span><a ui-sref="groupSentIndex"><span style="color: #428FF7">群发助手</span></a><span> / </span><span>群发消息</span></p></div>
+    <div class="bg_white" style="height: calc(100% - 40px);">
+        <div class="p10 mt15 ib_c">
+            <div style="width: 100%;" class="ib_c">
+                <div><label>发信人：</label></div><div style="width: calc(100% - 75px);" id="wxSelect" class="jqSelect"></div>
+            </div>
+            <div style="width: 100%;margin-top: 20px;" class="ib_c">
+                <div><label>收信人：</label></div><div><a style="width: 140px" class="btn_l_blue btn_icon_create" ng-click="isShow_cF()">选择收信人</a></div>
+            </div>
+            <div style="width: 100%;margin-top: 10px;" class="">
+                <p style="margin-left: 4rem;">您将发送消息给<span style="font-size: 18px;color: #F88C0D;" ng-bind="receive_wxIds.length">24</span>位好友：</p>
+            </div>
+            <div style="width: 100%;margin-top: 15px;padding-left: 4rem;width: calc(100% - 56px)" class="wx_friends">
+                <span ng-repeat="o in receive_wxIds"><span ng-bind="o.wx_name">默默</span><i ng-click="remove(o.wx_id)"></i></span>
+            </div>
+            <div style="width: 100%;margin-top: 20px;" class="ib_c">
+                <div style="vertical-align: top;"><label style="display: inline-block;width: 4rem;text-align: right">内容：</label></div>
+                <div style="width: calc(100% - 75px);">
+                    <div style="height: 160px;" ng-include="'/static/template/hypertext.html'">
+                    </div>
+                </div>
+            </div>
+            <div ng-include="'/WXCRM/chooseFriends'" ng-show="isShow_chooseFriends"></div>
+            <div ng-include="'/WXCRM/sentDetails'"  ng-show="isShow_sentDetails"></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(function () {
+{% comment %}        var wxSelect= $("#wxSelect").jqSelect({
+          option:[//选项数据
+              {label:"请选择",value:0},
+              {label:"选项1",value:6},
+              {label:"选项21",value:1},
+              {label:"选项31",value:2},
+              {label:"选项41",value:3},
+              {label:"选项51",value:4},
+              {label:"选项61",value:5}
+          ],
+          onChange:function(res){//选择框值变化返回结果
+              if(res=="")wxSelect.setResult("0");
+              console.log(res)
+          }
+      });
+      wxSelect.setResult(["0"]);{% endcomment %}
+
+    })
+
+
+
+</script>
+</body>
+</html>

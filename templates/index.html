@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+    {% load static  %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>首页</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/static/dist/css/ionicons.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+</head>
+<style>
+  .backgaround_img{
+        max-width: 100%;
+        max-height: 100%;
+        background: url(/static/img/main.png) no-repeat center;
+        background-size: cover;
+  }
+
+  .show-card{
+    width: 317px;
+    height: 111px;
+    background-color: #FFFFFF;
+    border: 1px solid #E1DEDE;
+    position: relative;
+    margin-left: 30px;
+  }
+
+  .show-card img{
+    position: relative;
+    left: 34px;
+    top: 22px;
+  }
+
+  .show-card span{
+    position: relative;
+    color: #a8a8a8;
+    font-size: 20px;
+    top: 0px;
+    left: 50px;
+  }
+
+  .show-card div{
+    position: relative;
+    color: #33363F;
+    font-size: 32px;
+    top: -20px;
+    left: 130px;
+    z-index: 999;
+  }
+
+</style>
+<body class="backgaround_img">
+<div class="row" style="margin-top: 30px;">
+  <div class="col-4">
+    <div class="show-card">
+      <img src="/static/img/wx_num.png">
+      <span>微信号总数</span>
+      <div id="wx_num">0</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="show-card">
+      <img src="/static/img/wx_online.png">
+      <span>微信号在线数</span>
+      <div id="wx_online">0</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="show-card">
+      <img src="/static/img/fensi_num.png">
+      <span>好友总数</span>
+      <div id="fensi_num">0</div>
+    </div>
+  </div>
+</div>
+<div class="row" style="margin-top: 15px;">
+  <div class="col-4">
+    <div class="show-card">
+      <img src="/static/img/wx_add.png">
+      <span>昨日添加好友任务数</span>
+      <div id="wx_add">0</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="show-card">
+      <img src="/static/img/wx_new.png">
+      <span>昨日新增好友数</span>
+      <div id="wx_new">0</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="show-card">
+      <img src="/static/img/wx_huoyue.png">
+      <span>昨日活跃好友数</span>
+      <div id="wx_huoyue">0</div>
+    </div>
+  </div>
+</div>
+<div class="row" style="margin-top: 15px;">
+  <div class="col-4">
+    <div class="show-card">
+      <img src="/static/img/tree-round-QQgroup.png">
+      <span>微信群总数</span>
+      <div id="wx_group">0</div>
+    </div>
+  </div>
+</div>
+<!-- ./wrapper -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<!-- SlimScroll -->
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/static/plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/static/dist/js/demo.js"></script>
+<script src="/static/js/common.js"></script>
+<script>
+  $(function () {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'total' %}",
+            data: {},
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                $("#wx_num").html(data.wx_num);
+                $("#wx_online").html(data.wx_online);
+                $("#fensi_num").html(data.fensi_num);
+                $("#wx_add").html(data.wx_add);
+                $("#wx_new").html(data.wx_new);
+                $("#wx_huoyue").html(data.wx_huoyue);
+                $("#wx_group").html(data.wx_group);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

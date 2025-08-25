@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>账号管理</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/static/dist/css/ionicons.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+
+
+    <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+
+    <!--  <link rel="stylesheet" href="/static/dist/css/bootstrap-tagsinput.css">-->
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="/static/plugins/select2/select2.min.css">
+
+    <link rel="stylesheet" href="/static/tooltipster/tooltipster.bundle.min.css"/>
+    <!-- 图片放大css-->
+    <link rel="stylesheet" href="/static/css/imgSize.css"/>
+    <!-- Theme style 放最下面，否则有些插件显示样式会不统一-->
+    <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <style type="text/css"></style>
+    {#ztree#}
+    <link rel="stylesheet" href="\static\plugins\ztree\css\zTreeStyle\zTreeStyle.css" type="text/css">
+    <style>
+        .task_dialog {
+            height: 550px;
+            overflow: auto;
+        }
+
+        #img_show img {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ddd;
+        }
+
+        #img_show img:hover {
+            -webkit-transform: scale(5); /*放大1.2倍*/
+            transform: scale(5); /*放大1.2倍*/
+            z-index: 1002;
+        }
+
+        #img_show div {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .header {
+            background-color: #ffffff;
+            height: 98px;
+            font-family: "Microsoft YaHei";
+            border-bottom: 1px solid #ececec;
+        }
+
+        .inf {
+            left: 36px;
+            top: 45px;
+            color: #0076FE;
+            font-family: "Microsoft YaHei";
+            position: relative;
+            font-size: 24px;
+            text-align: left;
+        }
+
+        .inf2 {
+            left: 80px;
+            top: 81px;
+            width: 820px;
+            font-family: "Microsoft YaHei";
+            position: relative;
+            border-bottom: 1px solid #e0dfdf;
+        }
+
+        .tab {
+            left: 62px;
+            top: 113px;
+            font-family: "Microsoft YaHei";
+            font-size: 14px;
+            position: relative;
+        }
+    </style>
+</head>
+
+
+<body class="hold-transition sidebar-mini">
+<section class="content">
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+        <div class="input-group col-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-mobile-phone  fa-lg"></i></span>
+            </div>
+            <input id="typeSearch" type="text" class="form-control" placeholder="手机号">
+        </div>
+        <div class="input-group col-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-user  fa-lg"></i></span>
+            </div>
+            <input id="nameSearch" type="text" class="form-control" placeholder="姓名">
+        </div>
+        <div class="input-group col-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-tag  fa-lg"></i></span>
+            </div>
+            <input id="valueSearch" type="text" class="form-control" placeholder="邮箱">
+        </div>
+
+        <div class="col-1">
+            <button class="btn btn-primary" onclick="init(1)"><i class="fa fa-search"></i> 查询</button>
+        </div>
+
+    </div>
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+        <button class="btn btn-app " onclick="tobanAccount()"><i class="fa fa-minus"></i> 禁用账号</button>
+        <button class="btn btn-app " onclick="tostartAccount()"><i class="fa fa-plus"></i> 审核启用</button>
+        <button class="btn btn-app " onclick="toassigntb_Authority()"><i class="fa fa-edit"></i> 菜单权限</button>
+        <button class="btn btn-app " onclick="wxAccountAuthAction()"><i class="fa fa-weixin"></i> 微信权限</button>
+        {#        <button class="btn btn-app " onclick="setManager()" ><i class="fa fa-user"></i> 管理权限 </button>#}
+        {#        <button class="btn btn-app " onclick="groupEdit()" ><i class="fa fa-clone"></i> 分组编辑 </button>#}
+        <button class="btn btn-app " onclick="accountCreate()"><i class="fa fa-user"></i> 创建账号</button>
+
+        <!-- user tracker -->
+
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="col-md-12" style="margin-top:20px;">
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" id="allItem" name="allItem" value=""/></th>
+                        <th style='text-align:center;'>登录名</th>
+                        <th style='text-align:center;'>姓名</th>
+                        <th style='text-align:center;'>手机号码</th>
+                        <th style='text-align:center;'>管理微信数量</th>
+                        <th style='text-align:center;'>上级管理员</th>
+                        <th style='text-align:center;'>状态</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tableBody">
+
+                    </tbody>
+                </table>
+
+            </div><!-- /.card-body -->
+        </div>
+        <div id="example2_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="row">
+                <div class="col-2">
+                    <div class="dataTables_info" id="userListTable_info" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-1">
+                    <div class="dataTables_info" id="div_pageSize" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-2">
+                    <div class="dataTables_info input-group" id="div_button" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-7" style="margin-top: 8px;">
+                    <div class="dataTables_paginate" id="userListTable_paginate">
+                        <ul class="pagination" id="page"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 菜单权限编辑 -->
+<div class="modal fade" id="Modal_Menu_Info" tabindex="-1" role="dialog" aria-labelledby="Modal_create1"
+     aria-hidden="true" style="z-index:1100">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="scheduleGroupName">菜单权限管理</h4>
+            </div>
+            <div class="card card-primary task_dialog">
+                <div class="modal-body">
+                    {##}
+                    <div class="content_wrap">
+                        <div class="zTreeDemoBackground left">
+                            <ul id="treeMenu" class="ztree"></ul>
+                        </div>
+                    </div>
+                    {##}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick='menuCheckAction()'>确认</button>
+            </div><!-- /.modal-content -->
+        </div>
+    </div><!-- /.modal -->
+</div>
+<!-- 菜单权限编辑 -->
+
+<!-- 微信权限编辑 -->
+<div class="modal fade" id="Modal_wxAccount_Auth" tabindex="-1" role="dialog" aria-labelledby="Modal_authWx"
+     aria-hidden="true" style="z-index: 1100;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">微信账号权限管理</h4>
+            </div>
+            <div class="card card-primary task_dialog">
+                <div class="modal-body">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="allItemByWxAuth" value=""/></th>
+                            <th>登陆账号</th>
+                            <th>头像</th>
+                            <th>昵称</th>
+                            <th>已分配人员</th>
+                            <th>状态</th>
+                        </tr>
+                        </thead>
+                        <tbody id="wxAuthInfo">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick='wxAccountAuthConfirm()'>确认</button>
+            </div><!-- /.modal-content -->
+        </div>
+    </div><!-- /.modal -->
+</div>
+<!-- 微信权限编辑 -->
+
+<!-- 创建账号 -->
+<div class="modal fade" id="Modal_Account_Create" tabindex="-1" role="dialog" aria-labelledby="Modal_Account_Create"
+     aria-hidden="true" style="z-index: 1100;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">创建账号</h4>
+            </div>
+            <div class="card card-primary task_dialog">
+                <div class="modal-body">
+                    {##}
+                    <div class="bod">
+                        <div class="cont">
+                            <div class=inf>
+                                <img src="/static/img/icon_data_nor.png" width="24px" height="24px"
+                                     style="position:relative; left:0px; top:0px; " alt="">
+                                <span style="position:relative;font-size:24px;color:#0076FE;left:0px;top:0px;">  填写个人资料 </span>
+                            </div>
+                            <div class=inf2>
+                                <span style="position:relative;font-size:16px;color:#5b5b5b;left:0px;top:0px;">  创建您的账号（ </span>
+                                <span style="position:relative;font-size:16px;color:#fa6d11;left:0px;top:0px;">  以下信息*均为必填项，请认真填写！ </span>
+                                <span style="position:relative;font-size:16px;color:#5b5b5b;left:0px;top:0px;">  ） </span>
+                            </div>
+                            <div class=tab>
+                                <table border="0">
+                                    <tr>
+                                        <td align="right" height="50px"><span
+                                                style="position:relative;color:#ff000e;left:0px;top:0px;"> *  </span>
+                                            <span style="position:relative;color:#333333;left:0px;top:0px;"> 登录名 </span>
+                                        </td>
+                                        <td width="39px" nowrap></td>
+                                        <td height="50px"><input style="width:204px" type="text" name="设置登录名"
+                                                                 id="username"/></td>
+                                        <td width="15px" nowrap></td>
+                                        <td style="color: red" id="usernameText"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td align="right" height="50px"><span
+                                                style="position:relative;color:#ff000e;left:0px;top:0px;"> *  </span>
+                                            <span style="position:relative;color:#333333;left:0px;top:0px;"> 姓名 </span>
+                                        </td>
+                                        <td width="39px" nowrap></td>
+                                        <td height="50px"><input style="width:204px" onkeyup="isChnCheck()" type="text"
+                                                                 name="姓名" id="viewname"/></td>
+                                        <td width="15px" nowrap></td>
+                                        <td style="color: red" id="viewnameText"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td align="right" height="50px"><span
+                                                style="position:relative;color:#ff000e;left:0px;top:0px;"> *  </span>
+                                            <span style="position:relative;color:#333333;left:0px;top:0px;">选择性别</span>
+                                        </td>
+                                        <td width="39px" nowrap></td>
+                                        <td height="50px"><input type="radio" checked="checked" name="选择性别" value="男"> 男
+                                            <input type="radio" name="选择性别" value="女"> 女
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right" height="50px"><span
+                                                style="position:relative;color:#ff000e;left:0px;top:0px;"> *  </span>
+                                            <span style="position:relative;color:#333333;left:0px;top:0px;">登录密码</span>
+                                        </td>
+                                        <td width="39px" nowrap></td>
+                                        <td height="50px"><input style="width:204px" onkeyup="passwordcheck()"
+                                                                 type="password" name="pwd" size=18px id="password">
+                                        </td>
+                                        <td width="15px" nowrap></td>
+                                        <td align="right" height="50px"><span id="passwordText" style="color: red">6-18个字符，请使用字母加数字的组合密码</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left" height="50px"><span
+                                                style="position:relative;color:#ff000e;left:0px;top:0px;">    </span>
+                                            <span style="position:relative;color:#333333;left:0px;top:0px;"> 手机号码</span>
+                                        </td>
+                                        <td width="39px" nowrap></td>
+                                        <td height="50px"><input style="width:204px" type="text" onblur="phoneCheck()"
+                                                                 name="手机号码" id="phone"><br/></td>
+                                        <td width="15px" nowrap></td>
+                                        <td align="left" height="50px"><span id="phoneText" style="color: red"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left" height="50px"><span
+                                                style="position:relative;color:#ff000e;left:0px;top:0px;">  </span>
+                                            <span style="position:relative;color:#333333;left:0px;top:0px;"> 电子邮箱 </span>
+                                        </td>
+                                        <td width="39px" nowrap></td>
+                                        <td height="50px"><input style="width:204px" type="email" onblur="EmailCheck()"
+                                                                 name="邮箱" id="email"><br/></td>
+                                        <td width="15px" nowrap></td>
+                                        <td align="left" height="50px"><span id="emailText" style="color: red"></span>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                    {##}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick='accCreateCommit()'>提交</button>
+            </div><!-- /.modal-content -->
+        </div>
+    </div><!-- /.modal -->
+</div>
+<!-- 创建账号 -->
+
+</body>
+<!-- ./wrapper -->
+<!-- jQuery -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<!-- SlimScroll -->
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/static/plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/static/dist/js/demo.js"></script>
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<!-- page script -->
+<script src="/static/page.js"></script>
+<!--<script src="/static/dist/js/bootstrap-tagsinput.js"></script>-->
+<script src="/static/js/common.js"></script>
+<!-- Select2 -->
+<script src="/static/plugins/select2/select2.full.min.js"></script>
+
+<script type="text/javascript" src="/static/tooltipster/tooltipster.bundle.min.js"></script>
+
+<script src="/static/plugins/jquery/jquery.cookie.js"></script>
+<script src="/static/layer/layer.js"></script>
+{#ztree#}
+<script type="text/javascript" src="\static\plugins\ztree\js\jquery.ztree.core.js"></script>
+<script type="text/javascript" src="\static\plugins\ztree\js\jquery.ztree.excheck.js"></script>
+<script src="/static/js/md5.js"></script>
+<script>
+    $(function () {
+                init(1);
+            }
+    );
+
+    function init(pageIndex) {
+        var pageSize = $("#pageSize_value").val();
+        pageSize = filterNull(pageSize, 5)
+        $.ajax({
+            type: 'get',
+            url: '/WXCRM/operData/',
+            data: {
+                "type": "getOperList",
+                "pageSize": pageSize,
+                "pageIndex": pageIndex,
+                "typeSearch": $("#typeSearch").val(),
+                "nameSearch": $("#nameSearch").val(),
+                "valueSearch": $("#valueSearch").val()
+            },
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                var list = res.pageList;
+                //console.log(list);
+                var count = res.count;
+                var tableHead = "", html = "", temp = "";
+                $("#tableBody").empty();
+                if (list != null && list.length > 0) {
+                    for (var i = 0; i < list.length; i++) {
+                        var status = filterNull(list[i][6], "");
+                        var status_f = '待审核';
+                        if (status == '1') {
+                            status_f = "有效";
+                        }
+                        else if (status == '2') {
+                            status_f = "已禁用";
+                        }
+                        temp += "<tr id='" + list[i][0] + "'><td ><input type='checkbox' class='minimal' name='dictItem'  value='" + list[i][0] + "'/></td>";
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][1], "") + "</td>";//name
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][2], "") + "</td>";//organization
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][3], "") + "</td>";//手机号
+                        temp += "<td style='text-align:center;'>" + list[i][4] + "</td>";//管理微信数量
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][5], "") + "</td>";//上级管理员
+                        temp += "<td style='text-align:center;'>" + status_f + "</td>";//状态
+                        temp += "</tr>";//操作
+                    }
+                    $("#tableBody").append(temp);
+
+                    $('.js-title').tooltipster();
+
+                    $(("[type='checkbox']")).iCheck({
+                        checkboxClass: 'icheckbox_square-blue',
+                        radioClass: 'iradio_square-blue'
+                    });
+
+                    //全选
+                    $('#allItem').on('ifChecked', function (event) {
+                        $("input[name='dictItem']").iCheck('check');
+                    });
+                    //反选
+                    $('#allItem').on('ifUnchecked', function (event) {
+                        $("input[name='dictItem']").iCheck('uncheck');
+                    });
+
+                    var pages = Math.ceil(count / pageSize);
+                    page = {'total': count, 'pageNum': pageIndex, 'pages': pages};
+                    setPage(page, "init", "show");
+
+                }
+            }
+        });
+    }
+
+    //toassigntb_Authority
+    function toassigntb_Authority() {
+        var selectItems = $("input:checkbox[name='dictItem']:checked");
+        if (selectItems.length != 1) {
+            alert("请选择单一账号进行编辑");
+            return;
+        }
+        {#设置菜单#}
+        var setting = {
+            check: {
+                enable: true,
+                chkboxType: {"Y": "ps", "N": "ps"}
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+        };
+        var operPersonId = $("input:checkbox[name='dictItem']:checked").val();
+        var zNodes = [];
+        $.ajax({
+            url: "{% url 'operMenuInfo' %}",
+            type: "GET",
+            async: false,
+            data: {'operPersonId': operPersonId},
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                var menuInfo = data['menuInfo'];
+                for (var menuItm in menuInfo) {
+                    for (var i = 0; i < menuInfo[menuItm].length; i++) {
+                        parentMenuid = menuInfo[menuItm][i][0]
+                        menuId = menuInfo[menuItm][i][1]
+                        if (menuId == 1) {
+                            openFlag = true
+                        } else {
+                            openFlag = false
+                        }
+                        menuName = menuInfo[menuItm][i][2]
+                        menuStatus = menuInfo[menuItm][i][3]
+                        if (menuStatus == 0) {
+                            menuStatusFlag = false
+                        } else {
+                            menuStatusFlag = true
+                        }
+                        zNodes.push({
+                            id: menuId,
+                            pId: parentMenuid,
+                            name: menuName,
+                            checked: menuStatusFlag,
+                            open: openFlag,
+                        })
+                    }
+                }
+            }
+        })
+
+        $(document).ready(function () {
+            $.fn.zTree.init($("#treeMenu"), setting, zNodes);
+        });
+        $("#Modal_Menu_Info").modal("show");
+
+    }
+
+    {#菜单权限控制确认#}
+    function menuCheckAction() {
+        var treeObj = $.fn.zTree.getZTreeObj("treeMenu"),
+                nodes = treeObj.getCheckedNodes(true),
+
+                menuIdList = "";
+        for (var i = 0; i < nodes.length; i++) {
+            menuIdList += nodes[i].id + "_";
+        }
+        if (menuIdList == "") {
+            var r = confirm("此操作将回收全部菜单权限");
+            if (r == false) {
+                return false
+            }
+        }
+        var operPersonId = $("input:checkbox[name='dictItem']:checked").val();
+
+        $.ajax({
+            url: "{% url 'menuAuthModify' %}",
+            type: "GET",
+            data: {
+                "operPersonId": operPersonId,
+                'menuIdList': menuIdList
+            },
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data['retStatus'] == 1) {
+                    alert('菜单权限修改成功');
+                    $("#Modal_Menu_Info").modal("hide");
+                } else {
+                    alert('菜单权限修改失败，请联系管理员');
+                }
+            }
+        })
+    }
+
+    // start menu
+    function ToStartMenu() {
+        var x;
+        var r = confirm("是否确定开启这些功能？");
+        if (r == true) {
+            alert('starting');
+            var selectMenu = $("input:checkbox[name = 'MenuSelect']:checked");
+            console.log(selectMenu)
+            var operid = 3;//$("input:checkbox[name='dictItem']:checked");
+            console.log(operid);
+            var startlist = [];
+            $.each(selectMenu, function (index, item) {
+                startlist.push($(item).val())
+            })
+        }
+        $.ajax({
+            type: 'POST',
+            url: 'Menu_Data_Start',
+            data: {
+                "operid": operid,
+                "StartList": startlist
+            },
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                var result = res.result;
+                if (result == 1) {
+                    alert("开启成功！");
+                    init(1);
+                    return;
+                } else {
+                    alert("开启无效!");
+                    init(1);
+                    return;
+                }
+            }, error: function () {
+                alert("开启失败！");
+            }
+        })
+
+    }
+
+    // ban menu
+    function ToBanMenu() {
+        var x;
+        var r = confirm("是否确定关闭这些功能？");
+        if (r == true) {
+            alert('ending');
+            var selectItem = $("input:checkbox[name = 'MenuSelect']:checked");
+
+        }
+
+    }
+
+    function tobanAccount() {
+        var x;
+        var r = confirm("是否确定禁用此账号？");
+        if (r == true) {
+            var selectItems = $("input:checkbox[name='dictItem']:checked");
+            var oper_id_list = []
+            $.each(selectItems, function (index, item) {
+                oper_id_list.push($(item).val())
+            })
+            var oper_id_str = oper_id_list.join("|");
+            $.ajax({
+                type: 'POST',
+                url: '/WXCRM/operManage_ban/',
+                data: {
+                    "oper_id_str": oper_id_str
+                },
+
+                success: function (res) {
+                    severcheck(res);
+                    res = parseJson(res);
+                    var result = res.result;
+                    if (result == 1) {
+                        alert("状态修改成功！");
+                        init(1);
+                        return;
+                    } else {
+                        alert("状态修改无效!");
+                        init(1);
+                        return;
+                    }
+                }, error: function () {
+                    alert("状态修改失败！");
+                }
+            });
+        }
+        else {
+
+        }
+    }
+
+    function tostartAccount() {
+        var selectItems = $("input:checkbox[name='dictItem']:checked");
+        if (selectItems.length == 0) {
+            alert("请选择账号");
+            return;
+        }
+        var oper_id_list = []
+        $.each(selectItems, function (index, item) {
+            oper_id_list.push($(item).val())
+        })
+        var oper_id_str = oper_id_list.join("|");
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'operManageStart' %}",
+            {#url: 'operManageStart',#}
+            data: {"oper_id_str": oper_id_str},
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data['retStatus'] == 1) {
+                    alert("状态修改成功！");
+                    init(1);
+                    return;
+                } else {
+                    alert("状态修改无效！");
+                    init(1);
+                    return;
+                }
+            },
+            error: function () {
+                alert("状态修改失败！");
+            }
+        });
+    }
+    function wxAccountAuthAction() {
+        var selectItems = $("input:checkbox[name='dictItem']:checked");
+
+        if (selectItems.length != 1) {
+            alert("请选择单一账号进行编辑");
+            return;
+        }
+        var selectItemsId = selectItems.val()
+        {##}
+        $.ajax({
+            url: "{% url 'queryWxAuthInfo' %}",
+            type: "GET",
+            data: {'selectItemsId': selectItemsId},
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data) {
+                    tempHtml = '';
+                    for (var key in data) {
+                        var accountData = {};
+                        if (isNumber(key)) {
+                            accountData.wx_id = data[key]["wx_id"];
+                            accountData.wx_login_id = data[key]["wx_login_id"];
+                            accountData.wx_name = data[key]["wx_name"];
+                            if (!data[key]["wx_name"]) {
+                                accountData.wx_name = "";
+                            }
+
+                            accountData.head_picture = data[key]["head_picture"];
+                            accountData.owner_name = data[key]["owner_name"];
+                            if (!accountData.owner_name) {
+                                accountData.owner_name = "";
+                            }
+                            accountData.hasAuth = data[key]["wxHasAuth"];
+
+                            var ifStart = data[key]["if_start"];
+                            var startClass = "btn btn-block btn-success btn-sm"; //1-在线
+                            var ifStartStr = "在线"
+                            if (ifStart == 0) {//2-拉黑
+                                startClass = "btn btn-block btn-secondary btn-sm";
+                                ifStartStr = "离线"
+                            }
+                            if (accountData.hasAuth == 1) {
+                                tempHtml += '<tr><td><input type=\"checkbox\" name=\"allItemByWxAuth\" checked="checked" value=\"' + accountData.wx_id + '\"/></td>';
+                            } else {
+                                tempHtml += '<tr><td><input type=\"checkbox\" name=\"allItemByWxAuth\" value=\"' + accountData.wx_id + '\" /></td>';
+                            }
+                            tempHtml += "<td>" + accountData.wx_login_id + "</td>"
+                            tempHtml += "<td style='text-align:center;'><img class='imgSizeZoom img-circle' width='30px' height='30px' src='" + data[key]["head_picture"] + "' /></td>";//头像
+                            tempHtml += "<td>" + accountData.wx_name + "</td>";
+                            tempHtml += "<td>" + accountData.owner_name + "</td>";
+                            tempHtml += "<td><button  type='button' class='" + startClass + "'>" + ifStartStr + "</button></td>";
+                            tempHtml += "</tr>";
+                        }
+                    }
+                    $("#wxAuthInfo").html(tempHtml);
+
+                    $(("[type='checkbox'][name='allItemByWxAuth']")).iCheck({
+                        checkboxClass: 'icheckbox_square-blue',
+                        radioClass: 'iradio_square-blue'
+                    });
+
+                    //全选
+                    $('#allItemByWxAuth').on('ifChecked', function (event) {
+                        $("input[name='allItemByWxAuth']").iCheck('check');
+                    });
+                    //反选
+                    $('#allItemByWxAuth').on('ifUnchecked', function (event) {
+                        $("input[name='allItemByWxAuth']").iCheck('uncheck');
+                    });
+
+                    //图片放大
+                    $('.imgSizeZoom').hover(function () {
+                        $(this).addClass('hoverZoom')
+                    }, function () {
+                        $(this).removeClass('hoverZoom')
+                    });
+                }
+            }
+        });
+        {##}
+        $("#Modal_wxAccount_Auth").modal("show");
+    }
+    function wxAccountAuthConfirm() {
+        var chkValueLen = $('input[name="allItemByWxAuth"]:checked').length;
+        if (chkValueLen == 0) {
+            var r = confirm("此操作将回收全部微信号权限");
+            if (r == false) {
+                return false;
+            }
+        }
+        var selectItems = $("input:checkbox[name='dictItem']:checked");
+        var selectItemsId = selectItems.val();
+        if (chkValueLen == 0) {
+            var chkFlag = 1;
+            var wxAccountList = "";
+        } else {
+            var r = confirm("确认分配微信号权限给该账户?")
+            if (r == true) {
+                var wxAccountList = "";
+                $('input[name="allItemByWxAuth"]:checked').each(function () {
+                    wxAccountList += $(this).val() + '@'
+                })
+                var chkFlag = -1;
+            }
+            else {
+                return false;
+            }
+        }
+        $.ajax({
+            url: "{% url 'wxAccountAuthModify' %}",
+            type: "GET",
+            data: {
+                "wxAccountList": wxAccountList,
+                "selectItemsId": selectItemsId,
+                "chkFlag": chkFlag
+            },
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data['retStatus'] == 1) {
+                    alert('微信号权限修改成功');
+                    $("#Modal_wxAccount_Auth").modal("hide");
+                } else {
+                    alert('微信号权限修改失败，请联系管理员');
+                }
+            }
+        });
+    }
+
+    function setManager() {
+        var selectItems = $("input:checkbox[name='dictItem']:checked");
+
+        if (selectItems.length != 1) {
+            alert("请选择单一账号进行编辑");
+            return;
+        }
+        var selectItemsId = selectItems.val();
+        $.ajax({
+            url: "{% url 'setManager' %}",
+            type: "GET",
+            data: {'selectItemsId': selectItemsId, 'flag': "1"},
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data.code == "1") {
+                    alert("设置成功！")
+                }
+            }
+        });
+
+    }
+
+    function isNumber(value) {
+        var patrn = /^(-)?\d+(\.\d+)?$/;
+        if (patrn.exec(value) == null || value == "") {
+            return false
+        } else {
+            return true
+        }
+    }
+    function groupEdit() {
+        alert("待建设")
+    }
+    function accountCreate() {
+
+        $("#Modal_Account_Create").modal("show");
+
+    }
+    function accCreateCommit() {
+        var username = $("#username").val();
+        var viewname = $("#viewname").val();
+        var sex = $('input[name=选择性别]:checked').val();
+        var password = $("#password").val();
+        var email = $("#email").val();
+        var phone = $("#phone").val();
+        if (username.trim() == "") {
+            alert("请输入用户名");
+            return false;
+        }
+        if (viewname.trim() == "") {
+            alert("请输入姓名");
+            return false;
+        }
+        if (sex.trim() == "") {
+            alert("请选择性别");
+            return false;
+        }
+        if (password.trim() == "") {
+            alert("请输入密码");
+            return false;
+        }
+        if ($("#usernameText").html() == "用户名已存在") {
+            alert("用户名已存在！");
+            return false;
+        }
+
+        if (passwordcheck() == false || EmailCheck() == false || phoneCheck() == false || isChnCheck() == false) {
+            alert("请正确完善个人资料信息")
+            return false;
+        }
+
+        password = hex_md5(password);
+        if (sex == "男") {
+            sex = "1";
+        }
+        else {
+            sex = "2";
+        }
+        $.ajax({
+            url: "{% url 'accountCreate' %}",
+            type: "GET",
+            data: {
+                "username": username,
+                "sex": sex,
+                "password": password,
+                "email": email,
+                "phone": phone,
+                "viewname": viewname
+            },
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data) {
+                    if (data.result == 1) {
+                        alert("注册成功！");
+                        $("#Modal_Account_Create").modal("hide");
+                        init(1);
+                    }
+                    else {
+                        alert("注册失败！");
+                        $("#Modal_Account_Create").modal("hide");
+                        init(1);
+                    }
+                }
+            }
+        })
+    }
+    function phoneCheck() {
+        var phone = $("#phone").val();
+        var phoneReg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
+        if (phone != null && phone != "") {
+            if (phoneReg.test(phone)) {
+                hint = "<img src='/static/img/icon_correct_nor.png'>";
+                $("#phoneText").html(hint);
+                return true;
+            }
+            else {
+                hint = "<img src='/static/img/icon_error_nor.png'>  手机号码不符合要求";
+                $("#phoneText").html(hint);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function EmailCheck() {
+        var myemail = $("#email").val();
+        var myReg = /^[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)$/;
+        var hint = "";
+        if (myemail != "" && myemail != null) {
+            if (myReg.test(myemail)) {
+                hint = "<img src='/static/img/icon_correct_nor.png'>";
+                $("#emailText").html(hint);
+                return true;
+            } else {
+                hint = "<img src='/static/img/icon_error_nor.png'>  电子邮箱不符合要求";
+                $("#emailText").html(hint);
+                return false;
+            }
+        }
+        return true;
+    }
+    function passwordcheck() {
+        var password = $("#password").val();
+        var hint = "";
+        if (password.length < 6 || password.length > 18) {
+            hint = "<img src='/static/img/icon_error_nor.png'>  密码长度不符合要求，必须6-18个字符";
+            $("#passwordText").html(hint);
+            return false;
+        }
+        var isNumber = 0;
+        var ischar = 0;
+        var isOther = 0;
+        for (i = 0; i < password.length; i++) {
+            //密码模式
+            iN = password.charCodeAt(i);
+            //判断输入密码的类型
+            if (iN >= 48 && iN <= 57) //数字
+                isNumber = 1;
+            else if (iN >= 65 && iN <= 90) //大写
+                ischar = 1;
+            else if (iN >= 97 && iN <= 122) //小写
+                ischar = 1;
+            else
+                isOther = 1;
+        }
+        if (isNumber + ischar + isOther <= 1) {
+            hint = "<img src='/static/img/icon_error_nor.png'>  不能单独使用字母、数字和符号";
+            $("#passwordText").html(hint);
+            return false;
+        }
+        hint = "<img src='/static/img/icon_correct_nor.png'>";
+
+        $("#passwordText").html(hint);
+        return true;
+    }
+    $("#username").blur(function () {
+        var username = $("#username").val();
+        if (username.trim() != "") {
+            $.ajax({
+                url: "{% url 'reg_submit' %}",
+                type: "POST",
+                data: {"username": username, "oper": "checkusername"},
+                success: function (data) {
+                    severcheck(data);
+                    data = parseJson(data);
+                    var hint = data.result;
+                    $("#usernameText").html(hint);
+                }
+            });
+        }
+    });
+    function isChnCheck() {
+        var viewname = $("#viewname").val();
+        {#var reg = /.*[\\u4e00-\\u9fa5]+.*$/;#}
+        var reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
+        if (reg.test(viewname)) {
+
+            hint = "<img src='/static/img/icon_correct_nor.png'>";
+            $("#viewnameText").html(hint);
+            return true;
+        } else {
+
+            hint = "<img src='/static/img/icon_error_nor.png'>  姓名需为中文";
+            $("#viewnameText").html(hint);
+            return false;
+        }
+    }
+</script>
+
+</body>
+</html>

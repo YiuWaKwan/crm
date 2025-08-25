@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>用户信息</title>
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/datatables/">
+	<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			<h1 class="text-center">
+				{{ request.session.oper_name }}
+			</h1>
+			<table class="table table-condensed table-striped" contenteditable="true">
+				<thead>
+					<tr>
+						<th>
+							账号信息
+						</th>
+						<th>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							账号：
+						</td>
+						<td>
+							{{ request.session.oper_id }}
+						</td>
+					</tr>
+					<tr class="success">
+						<td>
+							创建日期：
+						</td>
+						<td>
+							{{ request.session.oper_date}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table table-condensed table-striped" contenteditable="true">
+				<thead>
+					<tr>
+						<th>
+							私人信息
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							邮箱：
+						</td>
+						<td>
+							{{ request.session.oper_email }}
+						</td>
+					</tr>
+					<tr class="success">
+						<td>
+							电话：
+						</td>
+						<td>
+							{{ request.session.oper_phone }}
+						</td>
+					</tr>
+					<tr class="warning">
+						<td>
+							性别：
+						</td>
+
+                        {%if request.session.oper_sex == '1'%}
+                            <td> 男 </td>
+                        {% else %}
+                        <td> 女 </td>
+                        {% endif %}
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<!-- 按钮触发模态框 -->
+<br>
+<div class="center-block">
+<button class='btn btn-large btn-warning center-block' data-toggle="modal" data-target="#myModal">
+	修改密码
+</button>
+</div>
+
+<!-- 模态框（Modal） -->
+<div id="myModal" class="modal fade"  role="dialog"   aria-hidden=true>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span id="lblAddTitle" style="font-weight:bold">修改密码</span>
+                </h4>
+            </div>
+                <div class="modal-body" style="text-align:center;">
+                    <form  class="bs-example bs-example-form" role = "form">
+                            <div class = "input-group" >
+                                <span class="input-group-addon text-center"><i class="icon-th"></i></span>
+                                <input type = "text" class=" form-control" onkeyup="passwordcheck()"
+                                id="original_sc" placeholder="输入密码">
+                            </div>
+                            <br>
+                            <div class = "input-group">
+                                <span class = "input-group-addon"><i class="icon-th"></i></span>
+                                <input type = "text" class = "form-control"  placeholder="输入新密码"
+                                id="new_sc">
+                            </div>
+                            <br>
+                            <div class = "input-group" >
+                                <span class="input-group-addon text-center"><i class="icon-th"></i></span>
+                                <input type = "text"  class=" form-control" name="name"
+                                id="new_sc_again" placeholder="再输一次">
+                            </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer bg-info">
+                    <input type="hidden" id="ID" name="ID" />
+                    <button id="reg_submit" type="submit" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn green" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<script src="/static/js/md5.js"></script>
+<script src="/static/js/common.js"></script>
+<script>
+    $("#reg_submit").click(function(){
+        var original = $("#original_sc").val();
+        var new_sc = $("#new_sc").val();
+        var new_sc_again = $('#new_sc_again').val();
+        if(original.trim() == ""){
+            alert("请输入密码");
+            return false;
+        }
+        if(new_sc.trim() == ""){
+            alert('输入新密码');
+            return false;
+        }
+
+        if(new_sc_again.trim()== ""){
+            alert('重新输入密码')
+            return false;
+        }
+        if(new_sc_again.trim() != new_sc.trim()){
+            alert('两次输入不一致')
+            return false;
+        }
+        if(new_sc_again.trim() == original.trim()){
+            alert('新旧密码不能一致')
+            return false;
+        }
+        account_pwd = hex_md5(new_sc);
+        original = hex_md5(original);
+        $.ajax({
+            url: "{% url 'passwordChange' %}",
+            type: "POST",
+            data: {"account_original_pwd":original,"account_pwd":account_pwd},
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if(data.msg=="success"){
+                    alert('successfully change the password');
+                }
+                else if(data.msg=="fail"){
+                    alert('cannot change the password');
+                }
+                else{
+                    alert(data.msg);
+                    return false;
+                }
+            }
+        });
+
+    });
+    </script>
+</html>
+

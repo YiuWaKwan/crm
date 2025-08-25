@@ -1,0 +1,12 @@
+.imgSizeZoom{
+-webkit-transition: ease .2s;
+transition: ease .2s;
+-webkit-transform-origin:50% 50%; /* transform-origin默认值就是居中，可以不加 */
+transform-origin:50% 50%; /* transform-origin默认值就是居中，可以不加 */
+
+}
+.hoverZoom{
+-webkit-transform: scale(5); /*放大1.2倍*/
+transform: scale(5); /*放大1.2倍*/
+
+}

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/static/css/onekey/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <link href="/static/css/cencus.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/static/plugins/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/popper.js"></script>
+    <script type="text/javascript" src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/laydate.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/bootstrap-table-export.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/tableExport.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/xlsx.core.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/FileSaver.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/group_sdetail.js"></script>
+    <script type="text/javascript" src="/static/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+    <script type="text/javascript" src="/static/plugins/select/select.js"></script>
+
+
+    <title>账号运营分析</title>
+</head>
+<body style="background: #f9f9f9;width: 100%;height: 100%">
+    <div class="box">
+                <div class="top_side"></div>
+                <div class="left_side">
+                    <ul>
+                        <li><a href="../census/" ><img src="/static/img/report/icon_groupchat.png"><p >群聊天数据分析</p></a></li>
+                        <li style="border-left: 1px solid #0076FF;    background: rgba(0,118,255,0.05);"><a href="../group_sdetail/"><img src="/static/img/report/icon_groupdsession_blue.png"><p style="color: #0076FF;">群会话明细报表</p></a></li>
+                    </ul>
+                </div>
+          <div class="right_side">
+            <div style="height: 35px;">
+            <div style="width: 26%;display: inline-block;">
+                    <span style="color:#333333;display: inline-block" id="select_num" >微信 </span>
+                    <div id="wx_id_query" class="jqSelect" style="width:75%;height: 33px;display: inline-block"></div>
+            </div>
+            <div style="width: 40%;display: inline-block;">
+                    <span style="color:#333333;width: 100%">选择时间
+                        <input style="width: 35%;height: 31px;border:1px solid #DCD8D8;border-radius:4px;" type="text"  placeholder="请选择日期" id="start_time" autocomplete="off"> -
+                        <input style="height: 31px;border:1px solid #DCD8D8;border-radius:4px;width: 35%;" type="text"  placeholder="请选择日期" id="end_time" autocomplete="off"></span>
+            </div>
+            <div style="width: 31%;display: inline-block;">
+                    <span id="showModel" style="border-radius:4px;display: inline-block;background:#1AB6FE;line-height: 35px;color: #ffffff;width: 60%;text-align: center">
+                        选择群<small style="font-size: 12px;color: #ffffff;" id="selected_num">(已选择0个群)</small></span>
+                    <button id ="refresh"style="height:35px;border: 0px;color: #ffffff;background:#0084FF; font-family:MicrosoftYaHei;border-radius:4px;width: 20%;text-align: center;margin-left: 20px">
+                        查询
+                    </button>
+            </div>
+            </div>
+    <div style="width: 100%;">
+        <table  id="table" ></table>
+    </div>
+          </div>
+    </div>
+        <!-- 模态框1 -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h4 style="width: 100%;text-align: center;font-size: 18px">选择群</h4>
+                </header>
+                <div class="modal-body">
+                    <dl  style="height: 35px;">
+                        <div style="float: left;border: 1px solid #e7e5e5; display: flex;margin-right: 5px;">
+                            <span style="background: url(/static/img/report/icon_Search.png);width: 13px;height: 13px;display: inline-block; margin: auto 10px;"></span>
+                            <input placeholder="请输入关键字" id="search_key_word">
+                        </div>
+                        <div style="float: left;">
+                        <button style="color:rgba(255,255,255,1);background:rgba(0,132,255,1);border-radius:6px;height: 35px;" id="search_btn">查询</button>
+                        </div>
+                        <div style="float: right;display:flex;"   id="select_all">
+                            <span style="margin: auto;font-size: 14px;opacity:0.8;" >全选</span>
+                            <input type="checkbox" style="margin: auto;width: 20px;" onclick="select_all()">
+                        </div>
+                    </dl>
+                    <dl style="min-height: 45px;">
+                        <div style="width: 10%;float: left;margin: inherit;">已选择群：</div>
+                        <div id="selected_group_box" style="width: 87%;min-height: 35px;float: left;box-sizing:border-box;border:1px solid rgba(231, 227, 227, 1);padding: 10px">
+                        </div>
+                        <div class="clear_both"></div>
+                    </dl>
+                    <dl>
+                        <div style=" padding: 10px 13px;height:300px;background:rgba(255,255,255,1);box-shadow:0px 3px 21px 0px rgba(212,237,254,0.6);border-radius:4px;">
+                            <div class="group_select">
+                                <ul id="letter">
+                                </ul>
+                            </div>
+                            <div id="group_list_box" style="overflow-y: auto;height: 200px;">
+                            </div>
+                        </div>
+                    </dl>
+                </div>
+                <footer class="modal-footer" style="display: block;">
+                    <span>
+                        <button id="submit_btn">确定</button>
+                        <button style="background: #1AB6FE" id="cancel_btn">取消</button>
+                    </span>
+                </footer>
+            </div>
+        </div>
+</body>
+
+<script src="/static/plugins/jquery/jquery.cookie.js"></script>
+<script>
+    select_all_btn=1
+    select_all_letter_btn={};
+    selected_id_list_str = '';
+    wx_id ='';
+    $(function () {
+        group_info_list=[];
+
+        {#loadData(jsonData)#}
+        get_db_data('',wx_id);
+        $(".selected_group_name").bind('mouseover',function(){
+            $(this).find(".delete_btn").removeClass("hide_btn").addClass("show_btn")
+        })
+        $(".selected_group_name").bind('mouseout',function(){
+            $(this).find(".delete_btn").removeClass("show_btn").addClass("hide_btn")
+        })
+
+        $("#submit_btn").bind('click', function () {
+            modal.style.display = "none";
+            var selected_id_list=[]
+            for(var item in group_info_list){
+                if(group_info_list[item].selected===1){
+                    selected_id_list.push(item)
+                }
+            }
+            if(selected_id_list.length==0){get_group_num();}
+            else{$("#selected_num").html("(已选择"+selected_id_list.length+"个群)");}
+            selected_id_list_str=selected_id_list.join(",");
+        })
+        $("#cancel_btn").bind('click', function () {
+            modal.style.display = "none";
+            $("#selected_num").html("(已选择0个群)")
+            for(var group_item in group_info_list){
+                group_info_list[group_item].selected=0
+            }
+            $("#selected_group_box").html('')
+            $(".group_list_item").each(function(index,obj){
+                    $(obj).removeClass("group_list_item_selected")
+            })
+        })
+        $("#search_btn").bind('click',function(){
+            get_db_data($("#search_key_word").val(),wx_id)
+        })
+    })
+    var btn = document.getElementById('showModel');
+    // var close = document.getElementsByClassName('close')[0];
+    var modal = document.getElementById('modal');
+    btn.addEventListener('click', function (){
+        modal.style.display = "block";
+        get_db_data('',wx_id)
+    });
+function get_db_data(search_key,wx_id){
+    $.ajax({
+            url: "{% url 'getReportGroup' %}",
+            type: "POST",
+            headers: {"X-CSRFToken": $.cookie('csrftoken')},
+            data: {
+                "search": search_key,
+                "wx_id": wx_id
+            },
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                loadData(res)
+            }
+    });
+}
+</script>
+</html>

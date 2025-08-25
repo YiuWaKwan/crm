@@ -1,0 +1,632 @@
+*{
+    font-size: 14px;
+}
+a{
+    text-decoration: none;
+}
+::-webkit-input-placeholder{color: #CCCCCC}    /* 使用webkit内核的浏览器 */
+:-moz-placeholder{color: #CCCCCC}                  /* Firefox版本4-18 */
+::-moz-placeholder{color: #CCCCCC}                  /* Firefox版本19+ */
+:-ms-input-placeholder{color: #CCCCCC}           /* IE浏览器 */
+.bg{
+    background: #eaeaea;
+}
+.bg_white{
+    background: #ffffff;
+}
+.m16{
+    margin: 16px;
+}
+.mt20{
+    margin-top: 20px;
+}
+.mt15{
+    margin-top: 15px;
+}
+.mt10{
+    margin-top: 10px;
+}
+.ml10{
+    margin-left: 10px;
+}
+.mt20{
+    margin-top: 20px;
+}
+.mt30{
+    margin-top: 30px;
+}
+.p10{
+    padding: 16px;
+}
+.pd30{
+    padding-bottom: 30px;
+}
+.mp0{
+    margin: 0;
+    padding: 0;
+}
+.ib_c > div,.ib{
+    display: inline-block;
+}
+input[type=text]{
+    width:180px;
+    height:35px;
+    background:rgba(255,255,255,1);
+    border:1px solid rgba(219,219,219,1);
+    border-radius:3px;
+    padding: 0px 10px;
+}
+select{
+    width:100px;
+    height:38px;
+    background:rgba(255,255,255,1);
+    border:1px solid rgba(219,219,219,1);
+    border-radius:3px;
+    padding: 0px 10px;
+}
+select option{
+    height:38px;
+}
+.btn_blue{
+    width:80px;
+    height:38px;
+    background:rgba(66,143,247,1);
+    border-radius:3px;
+    color: #ffffff;
+    display: inline-block;
+    text-align: center;
+    line-height: 38px;
+    cursor: pointer;
+}
+.btn_gray{
+    width:78px;
+    height:36px;
+    background:#F2F2F2;
+    border-radius:3px;
+    color: #333333;
+    display: inline-block;
+    text-align: center;
+    line-height: 36px;
+    cursor: pointer;
+    border:1px solid rgba(213,213,213,1);
+}
+.btn_white {
+    width: 78px;
+    height: 36px;
+    background: #ffffff;
+    border: 1px solid rgba(219, 219, 219, 1);
+    border-radius: 3px;
+    color: #333333;
+    display: inline-block;
+    margin-left: 10px;
+    text-align: center;
+    line-height: 36px;
+    cursor: pointer;
+}
+.btn_l_blue{
+    width:130px;
+    height:38px;
+    background:rgba(236,247,253,1);
+    border-radius:3px;
+    color: #0078FF;
+    display: inline-block;
+    text-align: center;
+    line-height: 38px;
+    cursor: pointer;
+}
+.btn_icon_create{
+    position: relative;
+    padding-left: 10px;
+}
+.btn_icon_create:before{
+    content: "";
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    background: url("/static/img/tianjia.png") no-repeat center center;
+}
+.datagrid table{
+    width: 100%;
+    border-collapse: collapse;
+}
+.datagrid table thead tr td{
+    height:40px;
+    background:#F6F7FB;
+    border: 1px solid #ffffff;
+    padding: 0px 10px;
+}
+.datagrid table tbody tr td{
+    border-bottom: 1px solid rgba(239,239,239,1);
+    padding: 15px 10px;
+    height: 60px;
+}
+.datagrid table tbody tr:hover{
+    box-shadow:0px 2px 18px 0px rgba(66, 143, 247, 0.34);
+}
+input[type=text].text_date{
+    width:104px;
+    height:35px;
+    background:rgba(255,255,255,1);
+    border:1px solid rgba(219,219,219,1);
+    border-radius:3px;
+}
+input[type=text]:hover{
+    border-color: #428FF7;
+}
+.p_text_date{
+    position: relative;
+    display: inline-block;
+}
+.p_text_date:after{
+    content: "";
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: absolute;
+    background: url("/static/img/icon_rili_nor.png") no-repeat center center;
+    right: 10px;
+    top: 10px;
+}
+.no_data_tips{
+    display: none;
+    width: 100%;
+    height: 500px;
+    background: url("/static/img/nodatatips.png") no-repeat center center;
+}
+.operation span{
+    display: inline-block;
+    margin: 0 5px;
+    color: #0078FF;
+    cursor: pointer;
+}
+.operation span.unable{
+    color: #c3c3c3;
+    cursor: default;
+}
+.abnormal_font{
+    color: #EC1044;
+}
+.normal_font{
+    color: #0BA94E;
+}
+.minor_font{
+    color: #666666;
+}
+.fr{
+    float: right;
+}
+.tar{
+    text-align: right;
+}
+.tac{
+    text-align: center;
+}
+.cw{
+    color: white;
+}
+a,a:link,a:visited,a:hover,a:active{
+    text-decoration:none;
+    outline: none;
+}
+
+/*删除确认*/
+.delConfirm.panel{
+    height: 100%;
+    font-size: 16px;
+}
+.delConfirm .mask{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: black;
+    opacity: 0.4;
+    top: 0;
+    left: 0;
+    z-index: 999;
+}
+.delConfirm .contentPanel{
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+.delConfirm .contentBody{
+    width: 280px;
+    background:#ffffff;
+    border-radius:7px;
+    text-align: center;
+    padding: 22px;
+}
+.delConfirm .loading{
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+.delConfirm  .loadingImg {
+    width: 40px;
+    height: 40px;
+    background: url(/static/img/Spinner-1s-200px.gif) no-repeat center center;
+    display: inline-block;
+    background-size: 200%;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+.delConfirm img{
+    width: 16px;
+    height: 16px;
+    vertical-align: sub;
+    margin-right: 7px;
+}
+.delConfirm a.btn_blue{
+    height: 36px;
+    line-height: 36px;
+}
+.delConfirm a.btn_gray{
+    height: 34px;
+    line-height: 34px;
+}
+
+/*详情界面*/
+.sentDetails.panel{
+    height: 100%;
+}
+.sentDetails .mask{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: black;
+    opacity: 0.4;
+    top: 0;
+    left: 0;
+    z-index: 999;
+}
+.sentDetails .contentPanel{
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+.sentDetails .contentBody{
+    width: 1100px;
+    background:#EDEDED;
+    border-radius:7px
+}
+
+.sentDetails .dialog_title{
+    background:linear-gradient(90deg,rgba(105,55,243,1),rgba(84,107,246,1));
+    border-radius:7px 7px 0px 0px;
+    height:48px;
+    line-height: 48px;
+}
+
+
+.sentDetails .dialog_content{
+    margin-top: 20px;
+    padding: 0 30px 30px 30px;
+    background: white;
+    border-radius:0px 0px 7px 7px;
+}
+
+.sentDetails .dialog_close{
+    float: right;
+    width: 20px;
+    height: 20px;
+    background: url("/static/img/icon_guanbii_nor@2x.png") no-repeat center center;
+    margin: 12px 12px 0 0;
+    cursor: pointer;
+}
+.sentDetails .success_msg,.failure_msg{
+    text-align: left;
+}
+.sentDetails .success_msg .sent_status{
+    background: #F8FFEF;
+    display: inline-block;
+    border:1px solid #C2E999;
+    border-radius:3px;
+    padding: 6px 15px 6px 35px;
+    position: relative;
+}
+.sentDetails .success_msg .sent_status:before{
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background: url("/static/img/icon-tick.png") no-repeat center center;
+    background-size: 100%;
+    margin-left: -23px;
+    margin-top: 3px;
+}
+.sentDetails .failure_msg .sent_status{
+    background: #FDF3F2;
+    display: inline-block;
+    border:1px solid #F2A7A0;
+    border-radius:3px;
+    padding: 6px 20px 6px 40px;
+    position: relative;
+}
+.sentDetails .failure_msg .sent_status:before{
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background: url("/static/img/icon_yichang_nor@2x.png") no-repeat center center;
+    background-size: 100%;
+    margin-left: -23px;
+    margin-top: 3px;
+}
+.sentDetails .detail_title{
+    padding: 15px 0;
+}
+.sentDetails .sent_create{
+    font-size:18px;
+    color:rgba(235,138,0,1);
+}
+.sentDetails .success_count{
+    color: #EB8A00;
+    font-size: 18px;
+}
+.sentDetails .icon_circle{
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #72C140;
+    display: inline-block;
+    margin: 0 6px;
+}
+.sentDetails .success_friends,.failure_friends{
+    margin-top: 15px;
+}
+.sentDetails .friends_entity{
+    line-height: 25px;
+    background:rgba(247,247,247,1);
+    border-radius:3px;
+    padding: 10px 15px;
+    color: #666666;
+    margin-top: 5px;
+}
+.sentDetails .sent_body{
+    margin-top: 20px;
+}
+.sentDetails .sent_content{
+     line-height: 25px;
+    background:rgba(247,247,247,1);
+    border-radius:3px;
+    padding: 10px 15px;
+    color: #666666;
+    margin-top: 5px;
+}
+.sentDetails .btn_resend{
+    color: #428FF7;
+    float: right;
+    cursor: pointer;
+}
+.sentDetails .loading{
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+.sentDetails .loadingImg {
+    width: 40px;
+    height: 40px;
+    background: url(/static/img/Spinner-1s-200px.gif) no-repeat center center;
+    display: inline-block;
+    background-size: 200%;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+.sentDetails a .loadingImg {
+    width: 16px;
+    height: 16px;
+    background: url(/static/img/Spinner-1s-200px.gif) no-repeat center center;
+    display: inline-block;
+    background-size: 200%;
+    vertical-align: middle;
+    margin-right: 2px;
+}
+
+
+/*超级文本框*/
+.htpertext.box{
+    overflow: visible;
+    border-radius:3px;
+    border:1px solid rgba(219,219,219,1);
+    background: #ffffff;
+}
+.htpertext.box .toolbar{
+    background: #F3F3F3;
+    margin-right: -19px;
+}
+.htpertext.chat .box_ft .content .flex{
+    height: 8rem;
+}
+.htpertext.chat .box_ft{
+    height: 160px;
+}
+.htpertext.chat .box_ft .action{
+    margin-top: 25px;
+    margin-right: -20px;
+}
+.htpertext .btn_send{
+    width:80px;
+    height:38px;
+    background:rgba(66,143,247,1);
+    border-radius:3px;
+    color: #ffffff;
+    padding:0;
+    text-align: center;
+    line-height: 38px;
+    cursor: pointer;
+    border: 0;
+}
+.htpertext .btn_send:hover {
+    background-color: rgba(66,143,247,1);
+}
+.htpertext #fileArea{
+/*        margin-top: 20px;
+    height: auto;*/
+}
+
+/*选择好友弹窗*/
+.chooseFriends{
+    height: 100%;
+}
+.chooseFriends .mask{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: black;
+    opacity: 0.4;
+    top: 0;
+    left: 0;
+    z-index: 999;
+}
+.chooseFriends .contentPanel{
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+.chooseFriends .contentBody{
+    width: 1100px;
+    background:#EDEDED;
+    border-radius:7px
+}
+.chooseFriends .dialog_title{
+    background:linear-gradient(90deg,rgba(105,55,243,1),rgba(84,107,246,1));
+    border-radius:7px 7px 0px 0px;
+    height:48px;
+    line-height: 48px;
+}
+.chooseFriends .cw{
+    color: white;
+}
+.chooseFriends .dialog_bar{
+    margin: 20px 30px 15px 30px;
+}
+.chooseFriends .dialog_content{
+    margin: 0 30px;
+}
+.chooseFriends .query_bar{
+    padding: 15px;
+    background: white;
+}
+.chooseFriends .query_bar > div{
+    margin-right: 30px;
+}
+.chooseFriends .query_bar input[type=text]{
+    width: 110px;
+}
+.chooseFriends .tips_bar{
+    margin: 15px 0px;
+    padding: 0 15px;
+    background: #E9F6FE;
+    height: 45px;
+    line-height: 45px;
+    border:1px solid #B3D0E2;
+}
+.chooseFriends .choose_count{
+    color: red;
+    font-size: 18px;
+}
+.chooseFriends .choose_clear{
+    color: #428FF7;
+    float: right;
+    cursor: pointer;
+}
+.chooseFriends .friends_flag > span{
+    background:#F4F4F4;
+    border-radius:13px;
+    padding: 3.5px 19px;
+    margin: 5px;
+    display: inline-block;
+}
+.chooseFriends .datagrid table{
+    background: white;
+}
+.chooseFriends .datagrid table thead tr td{
+    border-color: #EDEDED;
+    background: #F6F7FB;
+}
+.chooseFriends .datagrid table tbody tr td{
+    height: 50px;
+    padding: 0px 10px;
+}
+.chooseFriends .datagrid table tr td:first-child{
+    text-align: center;
+}
+.chooseFriends .tips_choose{
+    position: relative;
+    margin-left: 25px;
+}
+.chooseFriends .tips_choose:before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -25px;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background: url("/static/img/icon_jieshi_nor@2x.png") no-repeat center center;
+}
+.chooseFriends .dialog_close{
+    float: right;
+    width: 20px;
+    height: 20px;
+    background: url("/static/img/icon_guanbii_nor@2x.png") no-repeat center center;
+    margin: 12px 12px 0 0;
+    cursor: pointer;
+}
+.chooseFriends .dialog_msg{
+    text-align: center;
+    position: absolute;
+    top: 185px;
+    width: 100%;
+}
+.chooseFriends .choose_msg{
+    background: #F8FFEF;
+    display: inline-block;
+    border:1px solid #C2E999;
+    box-shadow:0px 4px 13px 0px #D0D0D0;
+    border-radius:3px;
+    padding: 6px;
+    position: relative;
+    padding-left: 35px;
+}
+.chooseFriends .choose_msg:before{
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background: url("/static/img/icon-tick.png") no-repeat center center;
+    background-size: 100%;
+    margin-left: -23px;
+    margin-top: 3px;
+}
+.chooseFriends #regionSelect ul{
+    padding-right: 0px;
+}
+.chooseFriends .head_picture{
+    width: 30px;
+    height: 30px;
+}
+.chooseFriends #clear_choose{
+    display: none;
+}

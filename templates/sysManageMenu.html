@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+    
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>系统管理子菜单</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/static/dist/css/ionicons.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+</head>
+<style>
+  .backgaround_img{
+        max-width: 100%;
+        max-height: 100%;
+        background: url(/static/img/main.png) no-repeat center;
+        background-size: cover;
+  }
+  .col-4 {
+    display: inline-block;
+    flex: 0 0 33.333333%;
+    max-width: 50%;
+    margin-top: 10px;
+   }
+  .show-card{
+    width: 100%;
+    height: 111px;
+    background-color: #FFFFFF;
+    border: 1px solid #E1DEDE;
+    position: relative;
+    margin-left: 30px;
+  }
+
+  .show-card img{
+    position: relative;
+    left: 34px;
+    top: 22px;
+  }
+
+  .show-card span{
+    position: relative;
+    color: #33363F;
+    font-size: 20px;
+    top: 0px;
+    left: 50px;
+  }
+
+  .show-card div{
+    position: relative;
+    color: #a8a8a8;
+    font-size: 32px;
+    top: -20px;
+    left: 130px;
+    z-index: 999;
+  }
+
+</style>
+<body style="height: auto;font-size: 0;">
+<div id="menus">
+<!--
+  <div class="col-4" style="cursor: pointer;" onclick="goUrl('/WXCRM/chatHistory/');">
+    <div class="show-card">
+      <img src="/static/img/wx_num.png">
+      <span>微信号总数</span>
+      <div id="wx_num">0</div>
+    </div>
+  </div>
+-->
+</div>
+<!-- ./wrapper -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<!-- SlimScroll -->
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/static/plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/static/dist/js/demo.js"></script>
+<script src="/static/js/common.js"></script>
+<script>
+     $(function () {
+         init();
+      }
+    );
+  function init() {
+      $.ajax({
+          type: "POST",
+          url: "/WXCRM/childMenuData/",
+          data: {"type":"getChildMenus","parentMenu":{{parentMenu}}},
+          success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                var list=data.dataList;
+                if(list!=null&&list.length>0) {
+                    var tempHtml="";
+                    for (var i = 0; i < list.length; i++) {//menu_id 0,menu_name 1,parent_menu_id 2,menu_desc 3,menu_link 4,menu_order 5,menu_icon6
+                           tempHtml+= '<div class="col-4" style="cursor: pointer;" onclick="goUrl(\''+list[i][4]+'\')">';
+                            tempHtml+= '<div class="show-card">';
+                            tempHtml+= '  <img src="'+list[i][6]+'">';
+                            tempHtml+= '  <span>'+list[i][1]+'</span>';
+                            tempHtml+= '  <div style="font-size:15px;">'+list[i][3]+'</div>';
+                            tempHtml+= ' </div>';
+                          tempHtml+= '</div>';
+                    }
+                    $("#menus").html(tempHtml);
+                }
+          }
+      });
+  }
+
+  function goUrl(url){
+       parent.$("#mainFrame").attr("src",url);
+     }
+
+</script>
+</body>
+</html>

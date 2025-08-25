@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>主号管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/static/dist/css/ionicons.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+    <!-- 图片放大css-->
+    <link rel="stylesheet" href="/static/css/imgSize.css"/>
+    <link rel="stylesheet" href="/static/tooltipster/tooltipster.bundle.min.css"/>
+    <link rel="stylesheet" href="/static/css/templateStyle/wxAccount.css"/>
+</head>
+
+
+<body class="hold-transition sidebar-mini">
+<!-- Main content -->
+<label style="display:none;"><span></span><input type="password" name="hidden2" ></label>
+<section class="content">
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+
+        <div class="input-group-append col-2">
+            <span class="input-group-text"><i class="fa fa-info  fa-lg"></i></span>
+            <select id="ifStartId" class="form-control select2 select2-hidden-accessible" tabindex="-1"
+                    aria-hidden="true">
+                <option value="">状态</option>
+                <option value="1">在线</option>
+                <option value="0">离线</option>
+            </select>
+        </div>
+        <div class="input-group col-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-weixin btn-outline-success fa-lg"></i></span>
+            </div>
+            <label style="display:none;"><span></span><input type="text" name="hidden1" ></label>
+            <select id="wx_id_query" class="form-control select2 select2-hidden-accessible" tabindex="-1"
+                    aria-hidden="true"></select>
+        </div>
+        <div class="input-group col-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-mobile-phone  fa-lg"></i></span>
+            </div>
+            <input id="phoneId" type="text" class="form-control" placeholder="手机号码">
+        </div>
+
+        <div class="col-1">
+            <button id="search" class="btn btn-primary" onclick="queryWxInfo(1)"><i class="fa fa-search"></i> 查询
+            </button>
+        </div>
+
+    </div>
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+        <!--<button class="btn btn-app " data-toggle="modal" data-target="#Modal_create"><i class="fa fa-plus"></i> 创建
+        </button>-->
+        <button class="btn btn-app " onclick="open_add_wx_modal()" ><i class="fa fa-plus"></i> 添加微信
+        </button>
+        <!--<button class="btn btn-app " onclick="open_login_modal()" ><i class="fa fa-plus"></i> 上线界面
+        </button>-->
+        <!--<button class="btn btn-app " id="editModal" data-toggle="modal" data-target="#Modal_edit"
+                onclick="wxInfoEdit()"><i class="fa fa-edit"></i> 编辑
+        </button>-->
+        <!--button class="btn btn-app " onclick="deleteAction()"><i class="fa fa-trash"></i> 删除</--button>
+        <button class="btn btn-app " onclick="refresh()"><i class="fa fa-refresh"></i> 刷新好友</button>
+        <button class="btn btn-app " onclick="login()"><i class="fa fa-caret-square-o-right"></i> 上线</button>
+        <button class="btn btn-app " onclick="logout()"><i class="fa fa-power-off"></i> 下线</button-->
+    </div>
+</section>
+<section class="content">
+    <div class="col-md-12" style="margin-top:20px;">
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                    <thead>
+                    <tr id="table_h">
+                        <th>头像</th>
+                        <th>微信号</th>
+                        <th>昵称</th>
+                        <th>手机号码</th>
+                        <th>性别</th>
+                        <th>地区</th>
+                        <th>状态</th>
+                        <th style="text-align: center;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="wxinfo">
+
+                    </tbody>
+                </table>
+            </div><!-- /.card-body -->
+
+        </div>
+        <div id="example2_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="row">
+                <div class="col-2">
+                    <div class="dataTables_info" id="userListTable_info" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-1">
+                    <div class="dataTables_info" id="div_pageSize" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-2">
+                    <div class="dataTables_info input-group" id="div_button" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-7" style="margin-top: 8px;">
+                    <div class="dataTables_paginate" id="userListTable_paginate">
+                        <ul class="pagination" id="page"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="modal_box" id="add_wx_account">
+    <div class="modal_mask" onclick="close_add_wx_modal()"></div>
+    <div class="modal_content add_wx_modal_content">
+        <div class="modal_content_header">新增微信号<span class="close_this_modal" onclick="close_add_wx_modal()"></span></div>
+        <div class="modal_content_body">
+            <div class="add_wx_account_body">
+                <div class="tabs_bar">
+                    <div class="tabs_container">
+                        <div>
+                            <div class="tabs_tab tabs_tab_active" onclick="add_by_this_type(this,1)">手机号登录</div>
+                            <div class="tabs_tab tabs_tab_inactive" onclick="add_by_this_type(this,2)">微信号/QQ号登录</div>
+                        </div>
+                        <div class="tabs_ink_bar"></div>
+                    </div>
+                </div>
+                <div class="tabs_content">
+                    <div class="tabs_tabpane tabs_tabpane_active">
+                        <div class="input_account_bar ">
+                            <input type="text" maxlength="11" class="no_border_input" id="phone_no_Modal_input"  autocomplete="off"  oninput = "value=value.replace(/[^\d]/g,'')"  placeholder="请输入手机号">
+                            <span class="input_account_icon"></span>
+                        </div>
+                        <div class="input_account_bar ">
+                            <input oninput="if_eye_show(this)"  class="no_border_input"  id="password_Modal_input_phone" autocomplete="off" type="password" placeholder="请输入密码" onkeydown="if(event.keyCode==9){event.returnValue=false;}">
+                            <span class="password_eye input_show_passwd_icon" style="display: none" onclick="toggle_show_pwd(this)"></span>
+                            <span class="input_passwd_icon"></span>
+                        </div>
+                    </div>
+                    <div class="tabs_tabpane tabs_tabpane_inactive">
+                        <div class="input_account_bar ">
+                            <input  onkeyup="value=value.replace(/[\u4e00-\u9fa5]/ig,'')" type="text" id="wx_Modal_input"  class="no_border_input"   autocomplete="off" placeholder="请输入微信号/QQ号">
+                            <span class="input_account_icon"></span>
+                        </div>
+                        <div class="input_account_bar">
+                            <input oninput="if_eye_show(this)"  class="no_border_input"  id="password_Modal_input_wx" autocomplete="off" type="password" placeholder="请输入密码" onkeydown="if(event.keyCode==9){event.returnValue=false;}">
+                            <span class="password_eye input_show_passwd_icon"  style="display: none" onclick="toggle_show_pwd(this)"></span>
+                            <span class="input_passwd_icon"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="add_buttons_bar">
+                    <div class="add_wx_btn add_wx_btn_close" onclick="createWxInfo(false)">添加暂不登录</div>
+                    <div class="add_wx_btn add_wx_btn_login" onclick="createWxInfo(true)">立即登录</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal_box" id="edit_wx_account">
+    <div class="modal_mask" onclick="close_edit_wx_modal()"></div>
+    <div class="modal_content  edit_wx_modal_content">
+        <div class="modal_content_header">信息编辑<span class="close_this_modal" onclick="close_edit_wx_modal()"></span></div>
+        <div class="modal_content_body">
+            <div class="edit_wx_account_body">
+
+                <div class="edit_items_bar">
+                    <div class="edit_item_box">
+                        <div class="lable_edit_input lable_edit_input_wxid">微信号：</div><input id="wx_Modal_edit" type="text" class="edit_input"/>
+                    </div>
+                    <div class="edit_item_box">
+                        <div class="lable_edit_input lable_edit_input_phone">手机号码：</div><input  id="phone_no_Modal_edit"  type="text" class="edit_input" id="phone_num"/>
+                    </div>
+                    <div class="edit_item_box">
+                        <div class="lable_edit_input lable_edit_input_star lable_edit_input_passwd">密码：</div><input oninput="if_edit_eye_show(this)" id="password_Modal_edit"  type="password" class="edit_input" id="passwd"/>
+                        <img src="/static/img/wxAccount/icon_yincang_on.png" onclick="toggle_show_edit_pwd()" style="display: none" class="edit_show_passwd"/>
+                        <img src="/static/img/wxAccount/icon_zhanshi_nor.png" onclick="toggle_show_edit_pwd()" style="display: none" class="edit_show_passwd_close_eye"/>
+                    </div>
+                </div>
+                <div class="edit_buttons_bar">
+                    <div class="add_wx_btn edit_wx_btn_close" onclick="close_edit_wx_modal()" >关闭</div>
+                    <div class="add_wx_btn edit_wx_btn_submit" onclick="wxInfoEditCommitAction()">提交</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal_box" id="wx_account_login">
+    <div class="modal_mask" id="login_mask" onclick="close_wx_login_modal()"></div>
+    <div class="modal_content  login_wx_modal_content">
+        <div class="modal_content_header "><span id="login_header">微信登录</span><span class="close_this_modal" onclick="close_wx_login_modal()"></span></div>
+        <div class="modal_content_body" style="padding: 20px 0 10px 0;">
+            <div class="login_wx_account_body">
+                <div id="login_step_title"></div>
+                <div id="login_step_red_notice"></div>
+                <div id="login_step_main_pic"><img src="/static/img/wxAccount/3.png" style="width: 390px; height: 287px" id="login_show_img"></div>
+                <div id="login_step_bigfont_notice"></div>
+                <div id="login_step_close_notice"></div>
+                <div id="task_list_bar" style="display: none">
+                    <div class="task_list_text">有以下任务正在执行：</div>
+                    <div id="task_list_item_bar" >
+                        <div class="task_list_item"><div class="task_index">1</div><div class="task_name">一建加好友</div></div>
+                        <div class="task_list_item"><div class="task_index">2</div><div class="task_name">定时群发</div></div>
+                        <div class="task_list_item"><div class="task_index">3</div><div class="task_name">一建加好友</div></div>
+                        <div class="task_list_item"><div class="task_index">4</div><div class="task_name">定时群发</div></div>
+                    </div>
+                    <div class="task_list_text">是否继续下线：</div>
+                    <div class="task_list_buttons_bar">
+                        <div class="task_list_btn add_wx_btn_close" onclick="contunueLogout()">继续下线</div>
+                        <div class="task_list_btn add_wx_btn_login" onclick="stopLogout()">停止下线</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Modal_qrWx" tabindex="-1" role="dialog" aria-labelledby="Modal_qrWx"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h4 class="card-title">扫码获取微信好友</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row" style="margin-top: 10px">
+                        <div class="col-12" style="text-align: center">
+                            <span id="qrCodeTips">获取二维码中...</span>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;display:none" id="scanCodeImgDiv">
+                        <div class="col-12" style="text-align: center">
+                            <img id="scanCodeImg" src="#" style="margin:0;padding: 0;"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <!-- <button type="button" class="btn btn-primary" onclick="getFriends()">提交</button> -->
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<!-- ./wrapper -->
+<!-- jQuery -->
+<script src="/static/plugins/jquery/jquery.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<!-- SlimScroll -->
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/static/plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<!-- page script -->
+<script src="/static/js/common.js"></script>
+<script src="/static/page.js"></script>
+<script src="/static/js/loginWx.js"></script>
+<script src="/static/js/wxAccount.js"></script>
+<script>
+    var accountType=1;  //1手机号  2微信号
+    dataList={};
+    var today=new Date();
+    var submitTime=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    $("#register_timed_Modal_input").attr('value',submitTime);
+
+    $(function () {
+        queryWxInfo(1, checkType = 'Normal');
+        getWxId();
+    });
+
+    function getWxId() {
+        $.ajax({
+                    type: "POST",
+                    url: "{% url 'getWxId' %}",
+                    data: {},
+                    success: function (data) {
+                        severcheck(data);
+                        data = parseJson(data);
+                        console.info(data);
+                        var xuanxiangzhi = ""
+                        wx_info_list = data.data;
+                        var htmlcontent = "<option>全部</option>";
+                        $.each(wx_info_list, function (key, wx_info) {
+                            xuanxiangzhi = wx_info.wx_name + "(" + wx_info.wx_login_id + ")";
+                            htmlcontent += "<option value='" + wx_info.wx_id + "' img='" + wx_info.head_picture + "'>" + xuanxiangzhi + "</option>";
+                        });
+                        $("#wx_id_query").empty().append(htmlcontent);
+                        $("#wx_id").empty().append(htmlcontent);
+                    }
+                }
+        );
+    }
+
+    function queryWxInfo(pageIndex) {
+        var pageShowNum = $("#pageSize_value option:selected").val();
+        if (!pageShowNum) {
+            pageShowNum = 5
+        }
+        var wxCheckId =  ($("#wx_id_query").val()=='全部')?'':$("#wx_id_query").val(); //微信号
+        var phCheckId = $('#phoneId').val(); // 手机号
+        var regCheckId = $("#regId option:selected").text(); // 注册人
+        var ifStartId = $("#ifStartId option:selected").val();
+        $("#search").hide();
+        $.ajax({
+            url: "{% url 'queryWxInfo' %}",
+            type: "GET",
+            data: {
+                "pageIndex": pageIndex,
+                "wxCheckId": wxCheckId,
+                "phCheckId": phCheckId,
+                "regCheckId": regCheckId,
+                "pageShowNum": pageShowNum,
+                "ifStartId": ifStartId
+            },
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data) {
+                    tempHtml = '';
+                    for (var key in data) {
+                        var accountData={};
+                        if (isNumber(key)) {
+                            accountData.wxLoginId= data[key]["wxLoginId"];
+                            accountData.wx_name= data[key]["wx_name"];
+                            if( ! data[key]["wx_name"] ){ accountData.wx_name="";}
+                            accountData.phone_no= data[key]["phone_no"];
+                            accountData.password= data[key]["password"];
+                            accountData.sex= data[key]["sex"];
+                            if( ! data[key]["sex"]){ accountData.sex="";}
+                            if( ! data[key]["zone"]){ accountData.zone="";}
+                            else{accountData.zone= data[key]["zone"];}
+                            accountData.signature= data[key]["signature"];
+                            accountData.register_time= data[key]["register_time"];
+                            accountData.head_picture= data[key]["head_picture"];
+                            accountData.client_id= data[key]["client_id"];
+                            accountData.devId= data[key]["devId"];
+                            accountData.registrar= data[key]["registrar"];
+                            accountData.if_admin= data[key]["if_admin"];
+                            dataList[accountData.wxLoginId]=accountData;
+                            var regTime=filterNull(data[key]["register_time"],"");
+                            if(regTime!=""){
+                                regTime=new Date(regTime).format("yyyy-MM-dd");
+                            }
+                            var ifStart = data[key]["if_start"];
+                            var statusClass = "wx_status_font wx_status_font_on"; //1-在线
+                            var login_button_class="wx_login_button wx_login_button_on"
+                            var ifStartStr = "在线";
+                            var function_name = "logout('"+accountData.wxLoginId+"')";
+                            if (ifStart == 0) {//2-拉黑
+                                statusClass = "wx_status_font wx_status_font_off";
+                                login_button_class="wx_login_button wx_login_button_off"
+                                ifStartStr = "离线";
+                                function_name = "login('"+accountData.wxLoginId+"')";
+                            }
+                            tempHtml += '<tr>';
+                            tempHtml += "<td style='text-align:left;'><img class='img-circle' width='30px' height='30px' src='"+ data[key]["head_picture"] +"' /></td>";//头像
+                            tempHtml += "<td>" + data[key]["wxLoginId"] + "</td>";
+                            tempHtml += "<td>" + accountData.wx_name + "</td>";
+                            tempHtml += "<td>" + data[key]["phone_no"] + "</td>";
+                            tempHtml += "<td>" + accountData.sex + "</td>";
+                            tempHtml += "<td>" + accountData.zone + "</td>";
+                            //tempHtml += "<td style='text-align:left;'><span class='js-title' title='"+data[key]["signature"]+"' style='display:inline-block;width:80px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>"+ filterNull(data[key]["signature"],"")+"</span></td>";
+                            //tempHtml += "<td>" + regTime + "</td>";
+                            //tempHtml += "<td><button  type='button' class='"+statusClass+"' onclick="+function_name+">" + ifStartStr+ "</button></td>";
+                            tempHtml += "<td><span class='"+statusClass+"'>" + ifStartStr+ "</span></td>";
+                            tempHtml += "<td><div class='wx_oper_list'>";
+                            if (ifStart == 0) {//不在线  点一下上线
+                                tempHtml += "<div class='login_button js-title' title='点击上线' onclick="+function_name+"><div class='login_button_font login_button_font_off'><div class='login_button_circle login_button_circle_off'></div><span class='little_font'>OFF</span></div></div>"
+                            }else{//在线  点一下下线
+                                tempHtml += "<div class='login_button js-title' title='点击下线' onclick="+function_name+"><div class='login_button_font login_button_font_on'><span class='little_font'>ON</span><div class='login_button_circle login_button_circle_on'></div></div></div>";
+                            }
+
+                            tempHtml +="<div class='wx_delete_icon js-title' title='删除' onclick=deleteAction('"+accountData.wxLoginId+"')></div>" +
+                                        "<div class='wx_edit_icon js-title' title='编辑' onclick=open_edit_wx_modal('"+accountData.wxLoginId+"','"+accountData.phone_no+"','"+accountData.password+"')></div>" +
+                                        "</div></td>";
+                            if(accountData.if_admin==1 ){
+                                if($("#table_h").children().last().text()!='操作员'){
+                                    $("#table_h").append("<th>操作员</th>")
+                                }
+                                accountData.operator= data[key]["operator"];
+                                if(accountData.operator==null){
+                                    accountData.operator='无'
+                                }
+                                tempHtml += "<td>" + accountData.operator + "</td>";
+                            }
+                            tempHtml += "</tr>";
+                        }
+                    }
+                    $("#wxinfo").html(tempHtml);
+
+                    $('.js-title').tooltipster();
+                }
+                page = {'total': data['countNum'], 'pageNum': pageIndex, 'pages': data['pageCount']}
+                setPage(page, "queryWxInfo", "show");
+                $("#search").show();
+            }
+        });
+    }
+
+    function isNumber(value) {
+        var patrn = /^(-)?\d+(\.\d+)?$/;
+        if (patrn.exec(value) == null || value == "") {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function phoneCheck(phone) {
+        //var phoneReg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
+        var phoneReg = /^\d{11}$/;
+        if (!phoneReg.test(phone)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function createWxInfo(if_login) {
+        var wx_Modal_input = document.getElementById('wx_Modal_input').value;
+        var phone_no_Modal_input = document.getElementById('phone_no_Modal_input').value;
+        var ifPhone = phoneCheck(phone_no_Modal_input);
+        var password_Modal_input_wx = document.getElementById('password_Modal_input_wx').value;
+        var password_Modal_input_phone = document.getElementById('password_Modal_input_phone').value;
+        var valid_flag=false;
+        var postData={}
+        if(accountType===1&&phone_no_Modal_input && password_Modal_input_phone){
+            if(!ifPhone){
+                alert("请确认手机号码有效性")
+                return
+             }
+            valid_flag=true;
+            postData={
+                    "phone_no_Modal_input": phone_no_Modal_input,
+                    "wx_Modal_input":phone_no_Modal_input,
+                    "password_Modal_input": password_Modal_input_phone
+                }
+        }else if (accountType===2&&wx_Modal_input && password_Modal_input_wx ) {
+            valid_flag=true;
+            postData={
+                    "wx_Modal_input": wx_Modal_input,
+                    "password_Modal_input": password_Modal_input_wx
+                }
+        }else{
+            alert("请确认输入信息的完整性")
+            return
+        }
+        if(valid_flag){
+            $.ajax({
+                url: "{% url 'createWxInfo' %}",
+                type: "GET",
+                data: postData,
+                success: function (data) {
+                    severcheck(data);
+                    data = parseJson(data);
+                    if (data['retStatus'] === 1) {
+                        alert("添加成功");
+                        close_add_wx_modal()
+                        queryWxInfo(1);
+                        getWxId();
+                        if(if_login){
+                            if(accountType===1) {
+                                login(phone_no_Modal_input)
+                            }else{
+                                login(wx_Modal_input)
+                            }
+                        }
+                    }
+                    else {
+                        alert(data['msg']);
+                    }
+                }
+            })
+        }
+    }
+
+    function createInfoClear() {
+        $('#wx_Modal_input').val("");
+        $('#phone_no_Modal_input').val("");
+        $('#password_Modal_input_wx').val("");
+        $('#password_Modal_input_phone').val("");
+    }
+    function wxInfoEditCommitAction() {
+        var wx_Modal_edit = document.getElementById('wx_Modal_edit').value;
+        var phone_no_Modal_edit = document.getElementById('phone_no_Modal_edit').value;
+        var ifPhone = phoneCheck(phone_no_Modal_edit)
+        var password_Modal_edit = document.getElementById('password_Modal_edit').value;
+
+        if (password_Modal_edit === "" ) {
+            alert("请完善信息")
+        } else if (phone_no_Modal_edit && ifPhone === false) {
+            alert("请确认手机号码有效性")
+        }else {
+            var postData={
+                "wx_Modal_edit": wx_Modal_edit,
+                "phone_no_Modal_edit": phone_no_Modal_edit,
+                "password_Modal_edit": password_Modal_edit
+            }
+            $.ajax({
+                url: "{% url 'editWxInfo' %}",
+                type: "GET",
+                data: postData,
+                success: function (data) {
+                    severcheck(data);
+                    data = parseJson(data);
+                    if (data['retStatus'] == 1) {
+                        alert("编辑成功");
+                        queryWxInfo(1);
+                        close_edit_wx_modal()
+                    }
+                    else {
+                        alert("编辑失败");
+                    }
+                }
+            })
+        }
+    }
+
+    function deleteAction(wxLoginId) {
+        if (confirm("确定删除此微信号相关信息吗？")){
+            $.ajax({
+                url: "{% url 'delWxInfo' %}",
+                type: "GET",
+                data: {"wxLoginId" :  wxLoginId},
+                success: function (data) {
+                    severcheck(data);
+                    data = parseJson(data);
+                    if (data['retStatus'] == -1) {
+                        alert("微信号： " + wxLoginId + "  删除失败")
+                    }
+                    queryWxInfo(1);
+                    getWxId();
+                }
+            })
+        }
+    }
+</script>
+<script type="text/javascript" src="/static/tooltipster/tooltipster.bundle.min.js"></script>
+<script src="/static/js/common.js"></script>
+</body>
+</html>

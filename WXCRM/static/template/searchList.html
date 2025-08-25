@@ -1,0 +1,42 @@
+<div class="contacts" style="position: relative;">
+    <div class="contacts" style="margin-bottom: 0px; margin-right: 0px;height: 98%;overflow-x: hidden; overflow-y: scroll;">
+        <div class="top-placeholder" style="height: 0px;"></div>
+        <div ng-repeat="item in allContacts| filter:{RemarkName:keyword}" data-height-calc="heightCalc" data-buffer-height="100" data-no-cache="true">
+            <div ng-if='item.type!="header"' >
+                <div class="contact_item on" ng-click="chatShow(item)">
+                    <div class="avatar">
+                        <img class="img lazy" src="[[item.pic]]" alt="">
+                    </div>
+                    <div class="info">
+                        <h4 class="nickname" ng-bind-html="item.RemarkName"></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="!allContacts.length">
+            <h4 class="contact_title">找不到匹配的结果</h4>
+        </div>
+        <div class="bottom-placeholder" style="height: 0px;"></div>
+        <div class="scroll-element scroll-y">
+            <div class="scroll-element_corner"></div>
+            <div class="scroll-arrow scroll-arrow_less"></div>
+            <div class="scroll-arrow scroll-arrow_more"></div>
+            <div class="scroll-element_outer">
+                <div class="scroll-element_size"></div>    
+                <div class="scroll-element_inner-wrapper">        
+                    <div class="scroll-element_inner scroll-element_track">            
+                        <div class="scroll-element_inner-bottom"></div>        
+                    </div>    
+                </div>    
+              <div class="scroll-bar" style="height: 64px; top: 0px;">        
+                <div class="scroll-bar_body">            
+                    <div class="scroll-bar_body-inner"></div>        
+                </div>        
+                <div class="scroll-bar_bottom"></div>        
+                <div class="scroll-bar_center"></div>    
+              </div>
+             </div>
+            </div>
+        </div>
+    </div>
+</div>

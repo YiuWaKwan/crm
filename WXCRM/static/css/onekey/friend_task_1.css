@@ -1,0 +1,177 @@
+body{
+     font-size: 15px;
+     font-family: 'Montserrat', sans-serif;
+     background: transparent;
+     line-height: 1.5;
+     font-weight: 400;
+     background-color:#f9f9f9;
+ }
+
+ .friend_add {
+    width: 700px;
+    height: 200px;
+    background-color: #fff;
+    /*margin: 20px 0 0 50px;*/
+    text-align: justify;
+    overflow: hidden;
+}
+
+  .friend_content
+ {
+      float:left;
+      overflow:hidden;
+      width:100%;
+      text-align: left;
+ }
+
+   .friend_miaosu
+ {
+     width:700px;
+     height:150px;
+     background-color:#fff;
+     margin:5px 0 0 5px;
+     text-align:left;
+     overflow:hidden;
+ }
+
+  .miaosu_c
+ {
+     width:700px;
+     height:300px;
+     margin:5px 0 0 5px;
+     float:left;
+     text-align: left;
+
+ }
+
+ .miaosu_c>.about_table
+{
+    padding:0;
+    width: 96%;
+     margin: 10px 0 0 10px;
+     border-spacing:   5px;
+}
+
+   .friend_add
+ {
+     width:700px;
+     height:150px;
+     background-color:#fff;
+     margin:5px 0 0 5px;
+     text-align:justify;
+     overflow:hidden;
+
+ }
+
+.friend_jd
+ {
+     width:700px;
+     height:270px;
+     background-color:#fff;
+     margin:5px 0 0 5px;
+     text-align:left;
+     overflow:hidden;
+ }
+ .friend_remark
+ {
+     width:700px;
+     height:100px;
+     background-color:#fff;
+     margin:10px 0 0 5px;
+     text-align:left;
+     overflow:hidden;
+ }
+
+
+.containerDiv{
+    display: table;
+}
+.childDiv{
+    display: table-cell;
+    height: 100%;
+    font-size:18px;
+    vertical-align:middle;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.remarkc{
+    font-size:18px;
+    width:660px;
+    height:40px;
+    line-height: 40px;
+    padding-left: 10px;
+    border:2px solid #f9f9f9;
+    color:#626262;
+    margin:5px 0 0 5px;
+    border-radius:3px;
+    vertical-align:middle;
+    text-align: left;
+
+}
+
+#chatresult{
+   height: 150px;
+   width:660px;
+   overflow: auto;
+   margin:10px 10px 10px 10px;
+    padding-left: 10px;
+   border:2px solid #f9f9f9;
+    text-align: left;
+
+   }
+
+.flagcls{
+    border: 1px solid blue;
+    border-radius: 45px;
+    margin-right: 5px;
+    padding: 2px;
+    color: blue;
+}
+
+.s1 span
+ {
+    font-size:22px;
+    color:#626262;
+    text-align:left;
+    display:block;
+    padding-left: 5px;
+ }
+
+.miaosu_c>.about_table  td
+{
+    /*height:46px;*/
+    overflow:hidden;
+    font-size:18px;
+    color:#626262;
+    text-align: left;
+}
+
+.childDiv> span {
+    overflow:hidden;
+    font-size:18px;
+    color:#626262;
+    text-align: left;
+}
+
+
+.miaosu_c>.about_table  .tb_line
+{
+    border-bottom:1px solid #F5F5F5;
+    padding-right:5px;
+}
+.miaosu_c>.about_table .about_para1
+{
+    float:left;
+    padding-right:5px;
+
+}
+
+
+
+
+
+
+
+
+

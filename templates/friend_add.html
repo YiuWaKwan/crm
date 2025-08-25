@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- TITLE OF SITE -->
+    <meta http-equiv="Content-Type" content="text/html;" />
+    <title>一键加好友</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Cleannit - Cleaning Company HTML Template" />
+    <meta name="keywords" content=" cleannit, parallax, one page, multipage, responsive, landing, html template" />
+    <meta name="author" content=" cleannit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="/static/img/onekey/favicon.png">
+
+    <!-- CSS Begins
+================================================== -->
+
+    <!-- Main Style -->
+    <link href="/static/css/onekey/friend_add.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="friend_content">
+        <div class="friend_left">
+        
+            <div class="search">
+                <input id="search" type="text" class="search_input"  placeholder="微信号/昵称/手机"/>
+                <input type="button" class="search_btn" />
+            </div>
+            <div class="friend_list" id="friend_list">
+            </div>
+        </div>
+        <div class="friend_mid">
+            <img src="/static/img/onekey/to.png" alt="" >
+        </div>
+        <div class="friend_right">
+            <!--<div class="head" ><span class="s2">已选</span></div>-->
+            <div class="right_friend_list" id="right_friend_list">
+                <div class="list" data="" id="detail">
+                    <img src="/static/img/onekey/head_none.png" alt="" >
+                    <div class="list_1"><span class="s1">姓名</span></div>
+                </div>
+            </div>
+            <div class="text1">
+                <img src="/static/img/onekey/gong.png" alt="" >
+                <div class="list_1"><span class="s1">总共<span class="s1_1" id="friend_sum">0</span>个好友</span></div>
+            </div>
+            <div class="text1">
+                <img src="/static/img/onekey/zuijin.png" alt="" > 
+                <div class="list_1"><span class="s1">最近一个月添加<span class="s1_1" id="add_num">0</span>个好友</span></div>
+            </div>
+            <div class="head" ><span class="s2">打招呼<p >(仅限20个字)</p></span></div>
+            <div class="message">
+                <input id="sayhi" maxlength="20" type="text"  class="search_input" placeholder="交个朋友呗,哈哈!"/>
+                <!--<span style="float:left;margin-top:10px;">(仅限20个字)</span>-->
+            </div>
+        </div>
+        
+    </div>
+    <div class="friend_bottom">
+            <button class="button1" id="back">返回上一步</button>
+            <button class="button2" id="submit">执行</button>
+            <button class="button3" id="cancel">取消</button>
+    </div>
+
+  <div id="modal" class="modal">
+            <div class="modal-content" style="width: 35%">
+                <header class="modal-header">
+                    <h4 id='title' style="width: 100%;text-align: center">任务提醒</h4>
+                </header>
+                <div class="modal-body" id="body">
+                    <!--<dl>-->
+                        <!--<p style="line-height: 35px;width: 90%;text-align: center;">无符合条件记录，请重新设置筛选条件。-->
+                    <!--</p>-->
+                    <!--</dl>-->
+                </div>
+                <footer id ='footer' class="modal-footer" style="display: block;">
+                    <span>
+                        <button id="commit" style="margin-right: 40px;">继续创建任务</button>
+                        <button id="before" style="background: #ff2f64">暂不创建任务</button>
+                    </span>
+                </footer>
+            </div>
+        </div>
+
+</body>
+
+        <script type="text/javascript" src="/static/plugins/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/plugins/onekey/friend_add.js"></script>
+        <script type="text/javascript" src="/static/js/common.js"></script>
+
+
+</html>

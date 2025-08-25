@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>群发管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <STYLE>
+        #ztSelect{
+            width: 120px;
+        }
+        .single_text{
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 300px;
+            vertical-align: bottom;
+        }
+        .moreline{
+            max-width: 600px;
+            display:-webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+        p > span{
+            display: inline-block;
+        }
+        .show_msg{
+            padding: 10px;
+            text-align: center;
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            border-radius: 3px;
+            box-shadow:0px 2px 18px 0px rgba(66, 143, 247, 0.34);
+        }
+        .show_msg img{
+            width: 16px;
+            height: 16px;
+            margin-right: 7px;
+            vertical-align: sub;
+        }
+    </STYLE>
+</head>
+<body class="bg m16">
+<div class="mp0" ng-controller="indexController" ng-init="init()">
+    <div><p><span>聊天</span><span> / </span><span>群发助手</span></p></div>
+    <div class="bg_white">
+        <div class="p10 mt15 ib_c">
+            <div class="ib_c" style="width: calc(100% - 200px);margin-bottom: -10px;">
+                <div style="margin-right: 60px;margin-bottom: 10px;" class="ib_c"><div><label>微信号：</label></div><div id="wxSelect" class="jqSelect"></div></div>
+                <div style="margin-right: 60px;margin-bottom: 10px;" class="ib_c"><div><label>状态：</label></div><div id="ztSelect" class="jqSelect"></div></div>
+                <div style="margin-right: 60px;margin-bottom: 10px;"><label>发送日期：</label>
+                    <label class="p_text_date"><input id="sent_beginTime" ng-model="sent_beginTime" class="text_date" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})"></label>
+                    <label style="color: #333333">-</label>
+                    <label class="p_text_date"><input id="sent_endTIme" ng-model="sent_endTIme" class="text_date" type="text" onClick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})"></label>
+                </div>
+                <div style="margin-right: 30px;margin-bottom: 10px;"><label>关键词：</label><input ng-model="key_word" type="text" placeholder="请输入关键词"></div>
+            </div>
+            <div style="float: right;"><a class="btn_blue" ng-click="queryTrigger()">查询</a>
+                <a class="btn_white" ng-click="reset()">重置</a>
+            </div>
+        </div>
+    </div>
+    <div class="bg_white mt20">
+        <div class="p10">
+            <div><a class="btn_l_blue btn_icon_create" ui-sref="groupSentCreate">新建群发</a></div>
+            <div class="datagrid mt15">
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="40%">发送内容</td>
+                            <td width="10%">状态</td>
+                            <td width="15%">微信号</td>
+                            <td width="15%">日期</td>
+                            <td width="20%">操作</td>
+                        </tr>
+                    </thead>
+                    <tbody id="gridbody">
+                        <tr ng-repeat="a in dataList">
+                            <td>
+                                <p ng-if="a[6].length > 0" id="[[ a[0] + '__']]" ng-init="checkLength(a[0] + '__')">
+                                    <span>已发送给：</span><span ng-bind="a[6]" class="single_text">默默，奔跑的猪</span><span class="count"> 等<span ng-bind="a[9]"></span>人</span>
+                                </p>
+                                <p class="minor_font moreline" ng-if="a[11] == '1'" ng-bind-html="showFace(a[4])">报名成功后，会收到报名成功的短信并在钉钉客户端</p>
+                                <p class="minor_font moreline" ng-if="a[11] == '2'" ng-bind-html="'附件：' + showFile(a[4])">报名成功后，会收到报名成功的短信并在钉钉客户端</p>
+                            </td>
+                            <td>
+                                <span ng-if="a[3] == 1">待发送</span>
+                                <span ng-if="a[3] == 2">发送中</span>
+                                <span ng-if="a[3] == 3">成功</span>
+                                <span class="abnormal_font" ng-if="a[3] == 4">异常</span>
+                            </td>
+                            <td><span ng-bind="a[2]">奔跑的猪</span></td>
+                            <td><span ng-bind="a[5]|date:'yyyy-MM-dd'">2019-01-01</span></td>
+                            <td class="operation">
+                                <span ng-click="viewDetail(a)">详情</span>
+                                <span>|</span>
+                                <span ng-if="wxIds.indexOf(a[1]) > -1 && ['3','4'].indexOf(a[3]) > -1" ng-click="sentAgain(a[0])">再发一次</span>
+                                <span class="unable" ng-if="wxIds.indexOf(a[1]) == -1 || ['3','4'].indexOf(a[3]) == -1">再发一次</span>
+                                <span>|</span>
+                                <span ng-click="deleteSent(a[0])">删除</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="no_data_tips"></div>
+            </div>
+        </div>
+    </div>
+    <div class="mt10">
+        <div id="pageBox"></div>
+    </div>
+
+    <div ng-include="'/WXCRM/sentDetails'"  ng-show="isShow_sentDetails"></div>
+    <div class="panel delConfirm" ng-show="isShow_delSent">
+        <div class="mask"></div>
+        <div class="loading" ng-if="!delFlag"><span class="loadingImg"></span>处理中，请稍等...</div>
+        <div class="contentPanel" ng-if="delFlag">
+            <div class="contentBody">
+                <div><span><img src="/static/img/icon_yichang_nor@2x.png">确认删除该条群发消息记录吗？</span></div>
+                <div class="tc mt10"><span style="color: #666666;">删除后将无法查看历史记录</span></div>
+                <div class="tc mt30"><a class="btn_gray" ng-click="cancel_del()">取消</a><a class="btn_blue ml10" ng-click="confirm_del()">确定</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="show_msg" id="show_msg" ng-show="msg_success || msg_failure">
+        <span ng-show="msg_success"><img src="/static/img/icon_correct_nor.png">操作成功</span>
+        <span ng-show="msg_failure"><img src="/static/img/icon_yichang_nor@2x.png">操作失败</span>
+    </div>
+</div>
+
+
+<script>
+
+{% comment %}    $(function () {
+        var wxSelect= $("#wxSelect").jqSelect({
+          mult:true,//true为多选,false为单选
+          option:[//选项数据
+              {label:"全部",value:0},
+              {label:"选项1",value:6},
+              {label:"选项21",value:1},
+              {label:"选项31",value:2},
+              {label:"选项41",value:3},
+              {label:"选项51",value:4},
+              {label:"选项61",value:5}
+          ],
+          onChange:function(res){//选择框值变化返回结果
+              console.log(res)
+            var index = res.indexOf("0");
+            console.log(index)
+            if (index > -1) {
+                res.splice(index, 1);
+            }
+            if(res.length==0) {
+                wxSelect.setResult(["0"]);
+            }else {
+                wxSelect.setResult([]);
+                wxSelect.setResult(res);
+            }
+            console.log(res)
+          }
+      });
+      wxSelect.setResult(["0"]);
+
+      var ztSelect= $("#ztSelect").jqSelect({
+          option:[//选项数据
+              {label:"全部",value:0},
+              {label:"选项1",value:1},
+              {label:"选项2",value:2}
+          ],
+          onChange:function(res){//选择框值变化返回结果
+            if(res=="")ztSelect.setResult("0");
+            console.log(res)
+          }
+      });
+      ztSelect.setResult("0");
+    })
+
+    $('#pageBox').paging({
+        pageNum: 1, // 初始页码
+        pageTotal: 1, //总页数
+        callback: function(page) { // 回调函数
+            console.log(page);
+        }
+    }){% endcomment %}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>好友管理</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/static/dist/css/ionicons.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="/static/plugins/select2/select2.min.css">
+
+    <link rel="stylesheet" href="/static/tooltipster/tooltipster.bundle.min.css"/>
+    <!-- 图片放大css-->
+    <link rel="stylesheet" href="/static/css/imgSize.css"/>
+    <!-- Theme style 放最下面，否则有些插件显示样式会不统一-->
+    <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <style type="text/css">
+        .select2-selection__clear {
+            display: none;
+        }
+    </style>
+</head>
+
+
+<body class="hold-transition sidebar-mini">
+<section class="content">
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+        <div class="input-group col-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-weixin fa-lg"></i></span>
+            </div>
+            <select id="wx_id_query" class="form-control select2-hidden-accessible" tabindex="-1"
+                    aria-hidden="true"></select>
+        </div>
+        <div class="input-group col-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-book  fa-lg"></i></span>
+            </div>
+            <input id="friendNameSearch" type="text" class="form-control" placeholder="好友昵称">
+        </div>
+
+        <div class="input-group-append col-2">
+            <span class="input-group-text"><i class="fa fa-group  fa-lg"></i></span>
+            <select id="friendFlag" class="form-control select2 select2-hidden-accessible" tabindex="-1"
+                    aria-hidden="true">
+                <option selected="selected" value="">好友标签</option>
+                {% for  key, value in groupIdList %}
+                    <option value={{ value }}>{{ key }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-1">
+            <button class="btn btn-primary" onclick="init(1)"><i class="fa fa-search"></i> 查询</button>
+        </div>
+
+    </div>
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+        <button class="btn btn-app " onclick="toEditWxInfo()"><i class="fa fa-edit"></i> 编辑</button>
+    </div>
+
+
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="col-md-12" style="margin-top:20px;">
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th style='text-align:center;'>头像</th>
+                        <th style='text-align:center;'>昵称</th>
+                        <th style='text-align:center;'>真实姓名</th>
+                        <th style='text-align:center;'>手机号</th>
+                        <th style='text-align:center;'>性别</th>
+                        <th style='text-align:center;'>地区</th>
+                        <th style='text-align:center;'>标签</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tableBody">
+
+                    </tbody>
+                </table>
+
+            </div><!-- /.card-body -->
+        </div>
+        <div id="example2_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="row">
+                <div class="col-2">
+                    <div class="dataTables_info" id="userListTable_info" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-1">
+                    <div class="dataTables_info" id="div_pageSize" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-2">
+                    <div class="dataTables_info input-group" id="div_button" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-7" style="margin-top: 8px;">
+                    <div class="dataTables_paginate" id="userListTable_paginate">
+                        <ul class="pagination" id="page"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- 编辑好友信息 -->
+<div class="modal fade" id="friendInfoModal" style="width:100%">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <div class="card card-primary" id="wxInfoModal">
+                        <div class="card-header">
+                            <h3 class="card-title">编辑好友信息</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form role="form" id="form1">
+                            <input type="hidden" id="wxId">
+                            <div class="card-body">
+                                <div class="input-group">
+                                    <div class="col-md-3">
+                                        <label for="realname" style="margin-top:7px;">真实姓名:</label>&nbsp;
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" id="realname" placeholder="请输入真实姓名">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <div class="col-md-3">
+                                        <label for="qq" style="margin-top:7px;">qq:</label>&nbsp;
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" id="qq" placeholder="请输入qq号码">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <div class="col-md-3">
+                                        <label for="email" style="margin-top:7px;">邮箱:</label>&nbsp;
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="email" class="form-control" id="email" placeholder="请输入邮箱">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <div class="col-md-3">
+                                        <label for="weibo" style="margin-top:7px;">微博:</label>&nbsp;
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" id="weibo" placeholder="请输入微博名">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <div class="col-md-3">
+                                        <label for="otherAccount" style="margin-top:7px;">其它账号:</label>&nbsp;
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" id="otherAccount" placeholder="请输入其它账号">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <div class="col-md-3">
+                                        <label for="otherContacts"
+                                               style="margin-top:7px; font-size:14px;">其它联系方式:</label>&nbsp;
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" id="otherContacts"
+                                               placeholder="请输入其它联系方式">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <div class="col-md-3">
+                                        <label for="flag" style="margin-top:7px;">标签:</label>&nbsp;
+                                    </div>
+                                    <div class="col-md-9">
+                                        <select id="flag" class="form-control select2" multiple="multiple"
+                                                data-placeholder="请选择标签"
+                                                style="width: 100%;">
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <div align="right">
+                                    <button type="button" onclick="saveEditWxInfo()" class="btn btn-primary">保存</button>
+                                    <button type="button" class="btn btn-info" onclick="cancelEditInfo()">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 查看好友详细信息 -->
+<div class="modal fade" id="friendDetailInfoModal" style="width:100%">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Box Comment -->
+                    <div class="card card-widget">
+                        <div class="card-header">
+                            <div class="user-block">
+                                <img id="headPicShow" class="img-circle" src="/static/img/headImg/null.jpg" alt="用户头像">
+                                <span class="username" id="friendNameShow">Jonathan Burke Jr.</span>
+                                <span class="description" id="descriptionShow">Shared publicly - 7:30 PM Today</span>
+                            </div>
+                            <!-- /.user-block -->
+
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong> 手机号: </strong> <span id="phoneNoShow">138999999999</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> 性别: </strong> <span id="sexShow">男</span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong> 地区: </strong> <span id="zoneShow">138999999999</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> qq: </strong> <span id="qqShow"></span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong> 邮箱: </strong> <span id="emailShow">@</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> 微博: </strong> <span id="weiboShow">sd</span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong> 其它账号: </strong> <span id="otherAccountShow">@</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> 其它联系方式: </strong> <span id="otherContactsShow">sd</span>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong> 真实姓名: </strong> <span id="realnameShow">sd</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong> </strong> <span id=""></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> </strong> <span id=""></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- ./wrapper -->
+<!-- jQuery -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<!-- SlimScroll -->
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/static/plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/static/dist/js/demo.js"></script>
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<!-- page script -->
+<script src="/static/page.js"></script>
+<!--<script src="/static/dist/js/bootstrap-tagsinput.js"></script>-->
+<script src="/static/js/common.js"></script>
+<!-- Select2 -->
+<script src="/static/plugins/select2/select2.full.min.js"></script>
+
+<script type="text/javascript" src="/static/tooltipster/tooltipster.bundle.min.js"></script>
+
+<script src="/static/plugins/jquery/jquery.cookie.js"></script>
+<script src="/static/layer/layer.js"></script>
+<script>
+    $(function () {
+        init(1);
+        //初始化select2
+        $('.select2').select2({
+            allowClear: true, //是否允许清空选中
+        });
+        initFlagData();//初始化标签下拉框数据
+        getWxId();
+    });
+
+    function getWxId() {
+        $.ajax({
+                    type: "POST",
+                    url: "{% url 'getWxId' %}",
+                    data: {},
+                    success: function (data) {
+                        severcheck(data);
+                        data = parseJson(data);
+                        wx_info_list = data.data;
+                        var xuanxiangzhi = ""
+                        var htmlcontent = "<option>全部</option>";
+                        $.each(wx_info_list, function (key, wx_info) {
+                            xuanxiangzhi = wx_info.wx_name + "(" + wx_info.wx_login_id + ")";
+                            htmlcontent += "<option value='" + wx_info.wx_id + "' img='" + wx_info.head_picture + "'>" + xuanxiangzhi + "</option>";
+                        });
+                        $("#wx_id_query").empty().append(htmlcontent);
+                        $("#wx_id").empty().append(htmlcontent);
+                    }
+                }
+        );
+    }
+
+    function init(pageIndex) {
+        var pageSize = $("#pageSize_value").val();
+        pageSize = filterNull(pageSize, 5)
+        $.ajax({
+            type: 'get',
+            url: '/WXCRM/friendData',
+            data: {
+                "type": "getFriendList",
+                "pageIndex": pageIndex,
+                "pageSize": pageSize,
+                "wxMainIdSearch" : ($("#wx_id_query").val()=='全部')?'':$("#wx_id_query").val(),
+                "friendNameSearch": $("#friendNameSearch").val(),
+                "friendFlag": $("#friendFlag option:selected").val()
+            },
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                var list = res.pageList;
+                var count = res.count;
+                var tableHead = "", html = "", temp = "";
+                $("#tableBody").empty();
+                if (list != null && list.length > 0) {
+                    for (var i = 0; i < list.length; i++) {
+                        temp += "<tr id='" + list[i][0] + "'><td ><input type='radio' class='minimal' name='wxItem'  value='" + list[i][0] + "'/></td>";
+                        var headImg = list[i][6];
+                        if (!headImg || headImg == 'null') {
+                            headImg = "\\static\\img\\header_none.png";
+                        }
+                        var activeLevel = filterNull(list[i][12], 0)
+                        var activeLevelClass = "btn btn-block btn-secondary";
+                        if (activeLevel == 1) {
+                            activeLevelClass = "btn btn-block btn-primary";
+                        } else if (activeLevel == 2) {
+                            activeLevelClass = "btn btn-block btn-danger";
+                        }
+                        temp += "<td style='text-align:center;'  ><img class='img-circle' width='30px' height='30px' src='" + headImg + "'  onerror=\"imgerror(this)\" /></td>";//头像
+                        temp += "<td style='display:none;'>" + filterNull(list[i][0], "") + "</td>";//好友号
+                        //temp += "<td style='text-align:center;'>" + new Date(list[i][2]).format("yyyy-MM-dd") + "</td>";//添加时间
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][1], "") + "</td>";//昵称
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][13], filterNull(list[i][1], "")) + "</td>";//真实姓名
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][2], "") + "</td>";//手机号
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][15], "女") + "</td>";//性别
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][4], "") + "</td>";//地区
+                        temp += "<td style='text-align:center;'><span class='js-title' title='" + list[i][17] + "' style='display:inline-block;width:80px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>" + filterNull(list[i][17], "") + "</span></td>";//标签
+                        temp += "<td style='display:none;'>" + filterNull(list[i][7], "") + "</td>";//qq
+                        temp += "<td style='display:none;'>" + filterNull(list[i][8], "") + "</td>";//邮箱
+                        temp += "<td style='display:none;'>" + filterNull(list[i][9], "") + "</td>";//微博
+                        temp += "<td style='display:none;'>" + filterNull(list[i][10], "") + "</td>";//其它账号
+                        temp += "<td style='display:none;'>" + filterNull(list[i][11], "") + "</td>";//其它联系方式
+                        temp += "<td style='display:none;'>" + filterNull(list[i][16], "") + "</td>";//标签IDS
+                        temp += "</tr>";//操作
+                    }
+                    $("#tableBody").append(temp);
+                    $("tr").dblclick(function () {
+                        showDetail($(this).attr('id'));
+                    });
+                    //图片放大
+                    $('.imgSizeZoom').hover(function () {
+                        $(this).addClass('hoverZoom')
+                    }, function () {
+                        $(this).removeClass('hoverZoom')
+                    });
+
+                    $('.js-title').tooltipster();
+
+                    /*  $(("[type='checkbox']")).iCheck({
+                     checkboxClass : 'icheckbox_square-blue',
+                     radioClass: 'iradio_square-blue'
+                     });
+
+                     //全选
+                     $('#allItem').on('ifChecked', function(event){
+                     $("input").iCheck('check');
+                     });
+                     //反选
+                     $('#allItem').on('ifUnchecked', function(event){
+                     $("input").iCheck('uncheck');
+                     });
+                     */
+                    //iCheck for checkbox and radio inputs
+                    $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                        checkboxClass: 'icheckbox_minimal-blue',
+                        radioClass: 'iradio_minimal-blue'
+                    })
+
+
+                }
+
+                var pages = Math.ceil(count / pageSize);
+                page = {'total': count, 'pageNum': pageIndex, 'pages': pages};
+                setPage(page, "init", "show");
+            }
+        });
+    }
+    function imgerror(img) {
+        img.src = "\\static\\img\\headImg\\null.jpg";
+        img.onerror = null;   //控制不要一直跳动
+    }
+    function toEditWxInfo() {
+        var id = $('input[name="wxItem"]:checked').val();
+        if (!id) {
+            alert("请选择一条数据后，再进行编辑");
+            return;
+        }
+        var wxTr = $("#" + id);
+        $("#wxId").val(id);
+        $("#realname").val(wxTr.children("td").eq(4).text());
+        $("#qq").val(wxTr.children("td").eq(9).text());
+        $("#email").val(wxTr.children("td").eq(10).text());
+        $("#weibo").val(wxTr.children("td").eq(11).text());
+        $("#otherAccount").val(wxTr.children("td").eq(12).text());
+        $("#otherContacts").val(wxTr.children("td").eq(13).text());
+        //初始化标签数据
+        var flagObj = $("#flag").select2();
+        var optionVal = [];
+        var optionValStr = wxTr.children("td").eq(14).text()
+        optionVal = optionValStr.split(",");
+        flagObj.val(optionVal).trigger("change");
+
+        $("#friendInfoModal").modal("show");
+    }
+    function clearEditInfo() {
+        $("#wxId").val('');
+        $("#realname").val('');
+        $("#qq").val('');
+        $("#email").val('');
+        $("#weibo").val('');
+        $("#otherAccount").val('');
+        $("#otherContacts").val('');
+    }
+    function saveEditWxInfo() {
+        var flag = $("#flag").select2("val");
+        if (isNaN($("#qq").val()) || $("#qq").val().length > 15) {
+            alert("qq号只能是少于15位的数字，请重新输入");
+            return;
+        }
+        var emailVal = $("#email").val();
+        if (!emailVal && emailVal != '' && emailVal != null) {
+            if (!checkEmail(emailVal)) {
+                alert("邮箱格式不正确，请重新输入");
+                return;
+            }
+        }
+        $.ajax({
+            type: 'POST',
+            traditional: true,//传递数组
+            url: '/WXCRM/friendData/',
+            data: {
+                "type": "saveEditWxInfo",
+                "wxId": $("#wxId").val(),
+                "realname": $("#realname").val(),
+                "qq": $("#qq").val(),
+                "email": $("#email").val(),
+                "weibo": $("#weibo").val(),
+                "otherAccount": $("#otherAccount").val(),
+                "otherContacts": $("#otherContacts").val(),
+                "flag": flag
+            },
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                var result = res.result;
+                if (result == 1) {
+                    init(1);
+                    $("#friendInfoModal").modal("hide");
+                    clearEditInfo();
+                } else {
+                    alert('保存失败')
+                }
+            }
+        });
+    }
+
+
+    function initFlagData() {
+        $.ajax({
+            type: 'get',
+            url: '/WXCRM/friendData',
+            data: {"type": "getFlagData"},
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                var list = res.flagList;
+                var optionHtml = "";
+                if (list != null && list.length > 0) {
+                    for (var i = 0; i < list.length; i++) {
+                        optionHtml += "<option value='" + list[i][0] + "'>" + list[i][1] + "</option>";
+                    }
+                    $("#flag").append(optionHtml);
+                }
+            }
+        });
+    }
+
+    function cancelEditInfo() {
+        $("#friendInfoModal").modal("hide");
+        clearEditInfo();
+    }
+
+    function showDetail(id) {
+        var wxTr = $("#" + id.trim());
+        $("#friendNameShow").html(wxTr.children("td").eq(4).text());
+        $("#descriptionShow").html("微信号：" + wxTr.children("td").eq(2).text() + "  &nbsp;&nbsp;&nbsp;个性签名：" + wxTr.children("td").eq(17).text());
+        $("#phoneNoShow").html(wxTr.children("td").eq(5).text());
+        $("#sexShow").html(wxTr.children("td").eq(6).text());
+        $("#zoneShow").html(wxTr.children("td").eq(7).text());
+        $("#qqShow").html(wxTr.children("td").eq(9).text());
+        $("#emailShow").html(wxTr.children("td").eq(10).text());
+        $("#weiboShow").html(wxTr.children("td").eq(11).text());
+        $("#otherAccountShow").html(wxTr.children("td").eq(12).text());
+        $("#otherContactsShow").html(wxTr.children("td").eq(13).text());
+        $("#realnameShow").html(wxTr.children("td").eq(4).text());
+
+        $("#friendDetailInfoModal").modal("show");
+    }
+
+    function viewMainIdList(wxId) {
+        layer.open({
+            type: 2,
+            title: '当前好友关系列表',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '60%'],
+            content: '/WXCRM/friendMainIdList/?wxId=' + wxId //iframe的url
+        });
+    }
+
+    function addRefreshTask() {
+        var id = $('input[name="wxItem"]:checked').val();
+        if (!id) {
+            alert("请选择一条数据后，再进行刷新");
+            return;
+        }
+
+        $.ajax({
+            type: 'get',
+            url: '/WXCRM/friendData',
+            data: {"type": "addRefreshTask", "wxId": id},
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                if (res.flag == "1") {
+                    alert("开始刷新好友。")
+                } else {
+                    alert("现在无法刷新，请稍后重试。")
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

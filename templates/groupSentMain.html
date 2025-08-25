@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="groupSent" style="height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>群发助手</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="/static/plugins/jquery/jquery.min.js"></script>
+
+    <script src="/static/js/angular-1.7.0/angular.min.js"></script>
+    <script src="/static/js/angular-ui-router/angular-ui-router.min.js"></script>
+    <script src="/static/js/angular-1.7.0/angular-sanitize.min.js"></script>
+    <script src="/static/js/angular-1.7.0/angular-animate.min.js"></script>
+    <link rel="stylesheet" href="/static/css/wx.css">
+
+    <script type="text/javascript" src="/static/plugins/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/plugins/jquerypage/paging.css">
+    <script type="text/javascript" src="/static/plugins/jquerypage/paging.js"></script>
+    <script type="text/javascript" src="/static/plugins/My97DatePicker/WdatePicker.js"></script>
+    <link rel="stylesheet" href="/static/plugins/select/select.css">
+    <script type="text/javascript" src="/static/plugins/select/select.js"></script>
+    <script src="/static/js/jQuery/jquery.ui.widget.js"></script>
+    <script src="/static/js/jQuery/jquery.fileupload.js"></script>
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/groupSent.js"></script>
+    <link rel="stylesheet" href="/static/css/groupSent.css">
+</head>
+<body class="bg m16" style="height: calc(100% - 32px)" ng-controller="appController">
+<div ui-view="groupSentMainView" style="height: 100%;"></div>
+{#<div ui-view="groupSentView"></div>#}
+</body>
+</html>

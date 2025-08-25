@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>登录</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <link type="favicon" rel="shortcut icon" href="/static/fav.png" />
+</head>
+<style>
+    .backgaround_img{
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        background: url(/static/img/bg.png) no-repeat;
+        background-size: 100% 100%;
+    }
+
+    .login_div{
+        background: #C7D8FB;
+        width: 406px;
+        height: 325px;
+        top: 250px;
+        right: 127px;
+        position: absolute;
+        border-radius: 10px;
+        opacity: 0.9;
+    }
+    .login_login{
+        top:30px;
+        color: #0076FE;
+        position: relative;
+        font-size:30px;
+        text-align: center;
+    }
+    .login_input{
+        width: 350px;
+        height: 44px;
+        border-radius: 10px;
+        position: relative;
+        left: 35px;
+    }
+    .login_name{
+        background: #fff;
+        top:54px;
+    }
+    .login_pass{
+        background: #fff;
+        top:70px;
+    }
+    .login_input img{
+        margin-top: 8px;
+        margin-left: 10px;
+    }
+    .login_input input{
+        width: 98%;
+        margin-top: 2px;
+        height: 40px;
+        line-height: 40px;
+        position: relative;
+        border-style: none none none ridge;
+        border-color: #F6F6F6;
+        text-indent: 10px;
+    }
+    .login_input div:first-child{
+        width: 50px;
+    }
+
+    .login_input div:nth-last-child(1){
+        width: 300px;
+    }
+
+    .login_button{
+        background: #3B83FD;
+        top:110px;
+        text-align: center;
+        color: #FFF;
+        left: 28px;
+        font-size:20px;
+        line-height: 44px;
+        cursor: pointer;
+    }
+
+    .login_font{
+        top:200px;
+        color: #3B83FD;
+        left: 28px;
+        font-size:16px;
+        line-height: 44px;
+        text-align: right;
+        position: absolute;
+    }
+
+    .button{
+        font-weight: bold;
+        text-shadow:1px 1px 1px #333;
+        border-radius: 5px;
+        margin:0 20px 20px 0;
+        overflow: hidden;
+    }
+    .button.blue{
+        border:1px solid #1e7db9;
+        box-shadow: 0 1px 2px #709eba inset,0 -1px 0 #497897 inset,0 -2px 3px #195ece inset;
+        background: -webkit-linear-gradient(top,#42a4e0,#3B83FD);
+        background: -moz-linear-gradient(top,#42a4e0,#3B83FD);
+        background: linear-gradient(top,#42a4e0,#3B83FD);
+    }
+    .blue:hover{
+        background: -webkit-linear-gradient(top,#70bfef,#4097ce);
+        background: -moz-linear-gradient(top,#70bfef,#4097ce);
+        background: linear-gradient(top,#70bfef,#4097ce);
+    }
+    .blue:active{
+        box-shadow: 0 1px 3px #114566 inset,0 3px 0 #fff;
+        background: -webkit-linear-gradient(top,#1a71a8,#1976b1);
+        background: -moz-linear-gradient(top,#1a71a8,#1976b1);
+        background: linear-gradient(top,#1a71a8,#1976b1);
+    }
+</style>
+<body class="backgaround_img">
+<div class="login_div">
+    <div class="login_login"><span>登录</span></div>
+    <div class="row login_input login_name">
+        <div>
+            <img src="/static/img/account.png">
+        </div>
+        <div>
+            <input type="text" id="account_name" placeholder="请输入账号" onkeydown='login_enter(event)'>
+        </div>
+    </div>
+    <div class="row login_input login_pass">
+        <div><img src="/static/img/pwd.png"></div>
+        <div>
+            <input type="password" id="account_pwd" placeholder="请输入密码" onkeydown='login_enter(event)'>
+        </div>
+    </div>
+    <div class="login_input login_font"> <a href="/register/">免费注册</a> <a>忘记密码</a>
+    </div>
+    <div class="login_input login_button button blue" onclick="login()"> <span>登录</span>
+    </div>
+</div>
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<script src="/static/js/md5.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/LocateDbObject.js"></script>
+<script>
+    sessionStorage.setItem("data_first_flag","0"); //粉丝库添加打开标识
+    sessionStorage.setItem("file_first_flag","0");  //文件添加打开标识
+    {#add by luolin#}
+    function login_enter(event){
+        var event=window.event?window.event:event;
+        if(event.keyCode==13){
+            login()
+        }
+    }
+
+    function login(){
+        var account_name = $("#account_name").val();
+        var account_pwd = $("#account_pwd").val();
+        if(account_name.trim() == ""){
+            alert("请输入用户名");
+            return false;
+        }
+        if(account_pwd.trim() == ""){
+            alert("请输入密码");
+            return false;
+        }
+        account_pwd=hex_md5(account_pwd);
+        $.ajax({
+            url: "{% url 'loginSystem' %}",
+            type: "POST",
+            data: {"account_name":account_name,"account_pwd":account_pwd},
+            success: function (data) {
+                data = JSON.parse(data);
+                if(data.msg==""){
+                    indexedDB.deleteDatabase(myIndexedDb.db_name);//登录成功，清理本地聊天缓存记录
+                    window.location.href='http://'+window.location.host+'/WXCRM/main/';
+                }
+                else if(data.msg=="账号未审核"){
+                    window.location.href='http://'+window.location.host+'/examine/';
+                }
+                else{
+                    alert(data.msg);
+                    return false;
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

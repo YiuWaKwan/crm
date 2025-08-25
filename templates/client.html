@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>慧聊</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/dist/css/ionicons.min.css">
+    <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="/static/plugins/iCheck/flat/blue.css">
+    <link rel="stylesheet" href="/static/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+    <link rel="stylesheet" href="/static/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+
+</head>
+<body class="hold-transition sidebar-mini">
+
+<div class="wrapper">
+    <div class="row mb-4">
+    </div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper" style="margin-left: 0">
+        <!-- Content Header (Page header) -->
+        <section class="content">
+            <div class="row" style="margin-top:20px;margin-left:1px;">
+                <div class="input-group col-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-tv fa-lg"></i></span>
+                    </div>
+                    <input id="clientId1" type="text" class="form-control" placeholder="容器编号">
+                </div>
+                <div class="input-group col-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-mobile-phone  fa-lg"></i></span>
+                    </div>
+                    <input id="vmName1" type="text" class="form-control" placeholder="容器名称">
+                </div>
+                <!--<div class="input-group col-2">-->
+                    <!--<div class="input-group-prepend">-->
+                        <!--<span class="input-group-text"><i class="fa fa-group  fa-lg"></i></span>-->
+                    <!--</div>-->
+                    <!--<input id="vmIp1" type="text" class="form-control" placeholder="模拟器IP">-->
+                <!--</div>-->
+                <div class="input-group col-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-registered  fa-lg"></i></span>
+                    </div>
+                    <input id="vmStatus1" type="text" class="form-control" placeholder="状态">
+                </div>
+                <div class="col-1">
+                    <button class="btn btn-primary" onclick="queryMachineInfo(1)"><i class="fa fa-search"></i> 查询
+                    </button>
+                </div>
+
+            </div>
+            <div class="row" style="margin-top:20px;margin-left:1px;">
+                <!--<button class="btn btn-app " data-toggle="modal" data-target="#Modal_create"><i class="fa fa-plus"></i>-->
+                    <!--新增-->
+                <!--</button>-->
+                <button class="btn btn-app " onclick="delMachine()"><i class="fa fa-trash"></i> 删除</button>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <table id="example3" class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th style='text-align:center;'><input type="checkbox" id="allItem" name="allItem" value=""/></th>
+                                    <th style='text-align: center;'>容器编号</th>
+                                    <th style='text-align: center;'>容器名称</th>
+                                    <th style='text-align: center;'>MAC地址</th>
+                                    <th style='text-align: center;'>IMEI号码</th>
+                                    <th style='text-align: center;'>容器手机</th>
+                                    <th style='text-align: center;'>容器状态</th>
+                                    <th style='text-align: center;'>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="_tableId">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="example2_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                        <div class="row">
+                            <div class="col-2">
+                                <div class="dataTables_info" id="userListTable_info" role="status"
+                                     aria-live="polite"></div>
+                            </div>
+                            <div class="col-1">
+                                <div class="dataTables_info" id="div_pageSize" role="status" aria-live="polite"></div>
+                            </div>
+                            <div class="col-2">
+                                <div class="dataTables_info input-group" id="div_button" role="status"
+                                     aria-live="polite"></div>
+                            </div>
+                            <div class="col-7" style="margin-top: 8px;">
+                                <div class="dataTables_paginate" id="userListTable_paginate">
+                                    <ul class="pagination" id="page"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="modal fade" id="Modal_Edit" tabindex="-1" role="dialog" aria-labelledby="Modal_create1"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">客户端编辑</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered ">
+                    <tbody>
+                        <thead>
+                            <tr>
+                                <td width='20%'>客户端编号</td>
+                                <td width='80%' >
+                                    <input type='text' class='form-control'  id='client_Id' disabled>
+                                </td>
+                            </tr>
+                            <tr><td>容器名称</td>
+                                <td>
+                                    <input type='text' class='form-control' id='vm_Name' disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>设备型号</td>
+                                <td>
+                                    <select id="vm_manufacturer" class="selectpicker show-tick form-control" data-live-search="false"></select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>容器手机<font color="red">*</font></td>
+                                <td>
+                                    <input type='text' class='form-control' id='memu_phone'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>IMEI号码<font color="red">*</font></td>
+                                <td>
+                                    <input type='text' class='form-control' id='memu_imei'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MAC地址<font color="red">*</font></td>
+                                <td>
+                                    <input type='text' class='form-control' id='memu_mac'>
+                                </td>
+                            </tr>
+                            <input type='hidden' id='machineItemId'>
+                            <tr>
+                                <td>运营商</td>
+                                <td>
+                                    <select id="telecom" class="selectpicker show-tick form-control" data-live-search="false"></select>
+                                </td>
+                            </tr>
+                        </thead>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick=' editMachineInfo()'>更新
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+</body>
+
+<!-- jQuery -->
+<script src="/static/plugins/jquery/jquery.js"></script>
+<script src="/static/plugins/jQueryUI/jquery-ui.min.js"></script>
+<script>
+    $.widget.bridge('uibutton', $.ui.button)
+</script>
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<script src="/static/plugins/fastclick/fastclick.js"></script>
+<script src="/static/dist/js/adminlte.js"></script>
+<script src="/static/dist/js/demo.js"></script>
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<script src="/static/plugins/jquery/jquery.cookie.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/dist/js/adminlte.min.js"></script>
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<script src="/static/page.js"></script>
+
+<!-- page script -->
+<script>
+    $(function () {
+        queryMachineInfo(1);
+    });
+
+    function queryMachineInfo(pageIndex) {
+        var clientId1 = $("#clientId1").val();
+        var vmName1 = $("#vmName1").val();
+        //var vmIp1 = $("#vmIp1").val();
+        var vmStatus1 = $("#vmStatus1").val();
+        var pageSize = $("#pageSize_value").val();
+        pageSize = filterNull(pageSize, 5)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'client' %}",
+            headers: {"X-CSRFToken": $.cookie('csrftoken')},
+            data: {
+                "pageIndex": pageIndex,
+                "pageSize": pageSize,
+                "clientId1": clientId1,
+                "vmName1": vmName1,
+                //"vmIp1": vmIp1,
+                "vmStatus1": vmStatus1
+            },
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                $("#_tableId").empty();
+                if (res) {
+                    temp = "", html = "", status = "", itemId = ""
+                    for (item in res) {
+                        if (item == "pageCount") {
+                            break
+                        }
+                        itemId = res[item]["itemId"];
+                        debugger;
+                        temp += '<tr><td  style=\'text-align:center;\'><input type=\"checkbox\" name=\"machineItem\" value= \"' + itemId + '\" /></td>';
+                        temp += "<td style='text-align:center;'>" + filterNull(res[item]["clientId"], " ") + "</td>";
+                        temp += "<td style='text-align:center;'>" + filterNull(res[item]["devName"], " ") + "</td>";
+                        temp += "<td style='text-align:center;'>" + filterNull(res[item]["memu_mac"], " ") + "</td>";
+                        temp += "<td style='text-align:center;'>" + filterNull(res[item]["memu_imei"], " ") + "</td>";
+                        temp += "<td style='text-align:center;'>" + filterNull(res[item]["memu_phone"], " ") + "</td>";
+                        if (res[item]["devStatus"] != null && res[item]["devStatus"] == '1') {
+                            status = "在线";
+                        } else {
+                            status = "未上线"
+                        }
+                        temp += "<td style='text-align:center;'>" + filterNull(status, " ") + "</td>";
+                        temp += "<td style='text-align:center;'>" + "<a style='cursor:pointer;margin-right: 10px;' " +
+                            "title='编辑' onclick=\"showMachineInfo(" + JSON.stringify(res[item]).replace(/\"/g,"'") + ",0);" + "\">" +
+                            "<i class='fa fa-info-circle' data-toggle='modal' ></i></a>" + "</td>";
+                    }
+                    html += temp + "</tr>";
+                    $("#_tableId").append(html);
+                }
+
+                $(("[type='checkbox']")).iCheck({
+                    checkboxClass: 'icheckbox_square-blue',
+                    radioClass: 'iradio_square-blue'
+                });
+
+                //全选
+                $('#allItem').on('ifChecked', function (event) {
+                    $("input").iCheck('check');
+                });
+                //反选
+                $('#allItem').on('ifUnchecked', function (event) {
+                    $("input").iCheck('uncheck');
+                });
+                var pages = Math.ceil(res["pageCount"] / pageSize);
+                page = {'total': res["pageCount"], 'pageNum': pageIndex, 'pages': pages};
+                setPage(page, "queryMachineInfo", "show");
+
+            }
+        });
+    }
+
+    function filterNull(_val, replaceVal) {
+        if (replaceVal == null || replaceVal == undefined)
+            replaceVal = "&nbsp;";
+        if (_val == null || _val == undefined || _val == "")
+            _val = replaceVal;
+        return _val;
+    }
+
+    function showMachineInfo(item){
+        $("#client_Id").val(item["clientId"]);
+        $("#vm_Name").val(filterNull(item["devName"], " ") );
+        $("#memu_imei").val(filterNull(item["memu_imei"], " "));
+        $("#memu_mac").val(filterNull(item["memu_mac"], " "));
+        $("#memu_phone").val(filterNull(item["memu_phone"], " "));
+        $("#machineItemId").val(filterNull(item["itemId"], " "));
+        $.ajax({
+            type: "POST",
+            url: "{% url 'getMachineDic' %}",
+            async: false,
+            data: {},
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                telecomList=res.telecomList;
+                manufacturerList=res.manufacturerList;
+                $("#vm_manufacturer").html("");
+                debugger;
+                $.each(manufacturerList,function(index,manufacturer){
+                    if(manufacturer.dic_value == item["vm_manufacturer"]+"|"+filterNull(item["vm_model"])){
+                        $("#vm_manufacturer").append("<option value='"+manufacturer.dic_value+"' selected>"+manufacturer.dic_name+"</option>");
+                    }
+                    else{
+                        $("#vm_manufacturer").append("<option value='"+manufacturer.dic_value+"'>"+manufacturer.dic_name+"</option>");
+                    }
+                });
+                $("#telecom").html("");
+                $.each(telecomList,function(index,telecom){
+                    if(telecom.dic_value == item["telecom"]){
+                        $("#telecom").append("<option value='"+telecom.dic_value+"' selected>"+telecom.dic_name+"</option>");
+                    }
+                    else{
+                        $("#telecom").append("<option value='"+telecom.dic_value+"'>"+telecom.dic_name+"</option>");
+                    }
+                });
+            }
+        });
+        $("#Modal_Edit").modal("show");
+    }
+
+
+    function editMachineInfo() {
+        var telecom = $("#telecom").val();
+        var vm_manufacturer = $("#vm_manufacturer").val();
+        var memu_phone = $("#memu_phone").val().trim();
+        var memu_imei = $("#memu_imei").val().trim();
+        var memu_mac =  $("#memu_mac").val().trim();
+        var machineItemId = $("#machineItemId").val();
+        if(vm_manufacturer == ""){
+            alert("请选择一种设备型号");
+            return false;
+        }
+        if(memu_phone == ""){
+            alert("请输入手机号码");
+            return false;
+        }
+        if(memu_imei == ""){
+            alert("请输入IMEI号码");
+            return false;
+        }
+        if(memu_mac == ""){
+            alert("请输入MAC地址");
+            return false;
+        }
+        if(telecom == ""){
+            alert("请选择一个运营商");
+            return false;
+        }
+        if(confirm("如果修改了参数则后台会先停止对应的容器，再进行参数修改，修改完毕再启动容器。")) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'machineEdit' %}",
+                headers: {"X-CSRFToken": $.cookie('csrftoken')},
+                data: {
+                    "telecom": telecom,
+                    "vm_manufacturer": vm_manufacturer,
+                    "memu_phone": memu_phone,
+                    "memu_imei": memu_imei,
+                    "memu_mac": memu_mac,
+                    "machineItemId": machineItemId
+                },
+                success: function (res) {
+                    severcheck(res);
+                    res = parseJson(res);
+                    var tempHtml = "", status = "";
+                    if (res["status"] == 200) {
+                        alert("更新成功！");
+                        $("#Modal_Edit").modal("hide");
+                        queryMachineInfo(1);
+                        return;
+                    }
+                }
+            });
+        }
+    }
+
+    function delMachine() {
+        if (!$("input[type='checkbox']").is(':checked')) {
+            alert("请选择要删除的条目！");
+            return;
+        }
+        var itemIds = '';
+        $("input:checkbox[name='machineItem']:checked").each(function (k) {
+            if (k == 0) {
+                itemIds = $(this).val();
+            } else {
+                itemIds += ',' + $(this).val();
+            }
+        })
+        $.ajax({
+            type: "POST",
+            url: "{% url 'machineDel' %}",
+            headers: {"X-CSRFToken": $.cookie('csrftoken')},
+            data: {"itemIds": itemIds},
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data["status"] == 200) {
+                    alert("删除成功！");
+                    queryMachineInfo(1);
+                    return;
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

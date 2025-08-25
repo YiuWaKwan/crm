@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>微信权限</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/datatables/">
+  <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span6">
+      <form>
+        <fieldset>
+           <caption><h3>创建任务</h3></caption>
+           <br>
+           <label>任务名称 &nbsp; &nbsp; &nbsp;</label><input type="text" />
+           <br>
+
+          <br>
+           <button class="btn btn-large btn-warning" data-toggle="modal" id = 'TaskName' onclick="ToCreatTask()">
+             创建任务
+          </button>
+        </fieldset>
+      </form>
+    </div>
+    <div class="span6">
+      <div class="row-fluid">
+        <div class="span6">
+          <table class="table">
+            <caption><h3>选择任务负责人</h3></caption>
+
+            <thead>
+              <tr>
+                <th>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="tableBody_1">
+             </tbody>
+          </table>
+        </div>
+        <div class="span6">
+          <table class="table">
+            <caption><h3>选择组员</h3></caption>
+            <thead>
+              <tr>
+                <th>
+                </th>
+              </tr>
+            </thead>
+              <tbody id="tableBody_2">
+             </tbody>
+          </table>
+        </div>
+      </div>
+      <button class="btn btn-large btn-warning" data-toggle="modal" data-target="#myModal">
+            提交
+              </button>
+    </div>
+    </div>
+  </body>
+  <!-- ./wrapper -->
+<!-- jQuery -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<!-- SlimScroll -->
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/static/plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/static/dist/js/demo.js"></script>
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<!-- page script -->
+<script src="/static/page.js"></script>
+<!--<script src="/static/dist/js/bootstrap-tagsinput.js"></script>-->
+<script src="/static/js/common.js"></script>
+<!-- Select2 -->
+<script src="/static/plugins/select2/select2.full.min.js"></script>
+
+<script type="text/javascript" src="/static/tooltipster/tooltipster.bundle.min.js"></script>
+
+<script src="/static/plugins/jquery/jquery.cookie.js"></script>
+<script src="/static/layer/layer.js"></script>
+<script>
+$(function () {
+         init(1);
+      }
+    );
+
+    function init(pageIndex){
+        var pageSize = $("#pageSize_value").val();
+        pageSize=filterNull(pageSize,5)
+        $.ajax({
+        type: 'get',
+        dataType: 'json',
+        url: '/WXCRM/operData/',
+        data: {"type":"getOperList",
+                "pageSize": pageSize,
+                "pageIndex": pageIndex,
+                "typeSearch":$("#typeSearch").val(),
+                "nameSearch":$("#nameSearch").val(),
+                "valueSearch":$("#valueSearch").val()
+        },
+        success: function (res) {
+            var list = res.pageList;
+            //console.log(list);
+            var count=res.count;
+            var tableHead = "", html = "",temp="";
+            $("#tableBody_1").empty();
+            if(list!=null&&list.length>0) {
+                for (var i = 0; i < list.length; i++) {
+                   var status= filterNull(list[i][4],"");
+                    var status_f='无效';
+                    if(status=='1'){
+                       status_f="有效";
+                    }
+                        temp += "<tr id='"+list[i][0]+"'><td ><input type='checkbox' class='minimal' name='Master_Select'  value='"+list[i][0]+"'/></td>";
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][1],"") + "</td>";//name
+                        temp += "<td style='text-align:center;'><span class='js-title' title='"+list[i][2]+"' style='display:inline-block;width:200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>"+ filterNull(list[i][2],"")+"</span></td>";//手机号
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][3],"") + "</td>";//email
+                        temp += "<td style='text-align:center;'>" + status_f + "</td>";//状态
+                        temp +=  "</tr>";//操作
+                }
+            $("#tableBody_1").append(temp);
+
+            $("#tableBody_2").empty();
+            if(list!=null&&list.length>0) {
+                for (var i = 0; i < list.length; i++) {
+                   var status= filterNull(list[i][4],"");
+                    var status_f='无效';
+                    if(status=='1'){
+                       status_f="有效";
+                    }
+                        temp += "<tr id='"+list[i][0]+"'><td ><input type='checkbox' class='minimal' name='Slave'  value='"+list[i][0]+"'/></td>";
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][1],"") + "</td>";//name
+                        temp += "<td style='text-align:center;'><span class='js-title' title='"+list[i][2]+"' style='display:inline-block;width:200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>"+ filterNull(list[i][2],"")+"</span></td>";//手机号
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][3],"") + "</td>";//email
+                        temp += "<td style='text-align:center;'>" + status_f + "</td>";//状态
+                        temp +=  "</tr>";//操作
+                }
+            $("#tableBody_2").append(temp);
+
+      $('.js-title').tooltipster();
+
+            $(("[type='checkbox']")).iCheck({
+                checkboxClass : 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
+            });
+
+            //全选
+            $('#allItem').on('ifChecked', function(event){
+                $("input").iCheck('check');
+            });
+            //反选
+            $('#allItem').on('ifUnchecked', function(event){
+                $("input").iCheck('uncheck');
+            });
+
+             var pages=Math.ceil(count/pageSize);
+             page={'total':count,'pageNum':pageIndex,'pages':pages};
+             setPage(page,"init","show");
+
+
+            }
+        }
+     });
+    }
+    //创建任务
+        function ToCreatTask(){
+        var x;
+        var r = confirm("是否确定创建任务");
+        if(r == true){
+            alert('starting');
+            TaskName = $('#TaskName').value
+            Taskid = Math.ceil(Math.random()*1000);
+        }
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: 'To_Creat_Task',
+            data: {
+                "Taskid": Taskid,
+                "TaskName": TaskName
+            },
+            success: function (res) {
+                var result = res.result;
+                if (result == 1) {
+                    alert("创建成功！");
+                    init(1);
+                    return;
+                } else {
+                    alert("创建失败!");
+                    init(1);
+                    return;
+                }
+            }, error: function () {
+                alert("无法创建！");
+            }
+        })
+
+    }
+    function AssignMasterAndSlave(){
+      var selectMas= $("input:checkbox[name='Master_Select']:checked");
+      if(selectItems.length!=1){
+                alert("只能选择一个任务负责人");
+                return;
+            }
+
+
+    }
+</script>

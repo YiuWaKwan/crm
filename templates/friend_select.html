@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>分类条件筛选列表</title>
+        <script type="text/javascript" src="/static/plugins/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/plugins/onekey/lib/jquery.cxselect.min.js"></script>
+        <script type="text/javascript" src="/static/plugins/onekey/friend_select.js"></script>
+        <script type="text/javascript" src="/static/js/common.js"></script>
+        <script type="text/javascript" src="/static/layer/layer.js"></script>
+        <link href="/static/css/onekey/friend_select.css" rel="stylesheet" type="text/css"/>
+        <!-- Favicons -->
+        <link rel="icon" type="image/png" href="/static/img/onekey/favicon.png">
+        <!--预览表格-->
+        <script src="/static/plugins/onekey/bc.grid-1.0.0.min.js"></script>
+        <link rel="stylesheet" href="/static/css/onekey/bc.grid-1.0.0.min.css"/>
+    </head>
+    <body>
+
+        <div class="cation-content">
+            <div style="height:50px">
+                <span style="text-align: center;display: block;font-size: 25px;color: #58ccf3;"><h4>好友筛选</h4></span>
+            </div>
+            <div  style="background: #fff;height: 48px;">
+                <dl class="cation-middle cation-list" id="citylist">
+                    <dt>区域</dt>
+                    <dd>
+                        <a style="margin: 13px 0; height: 25px;">省份：<select name="province" id ="province" class="province form-control" >
+                            <option>不限</option>
+                        </select>
+                        </a>
+                        <a style="margin: 13px 0;">城市：
+                        <select name="city"  id='city' class="city form-control" >
+                            <option>不限</option>
+                        </select>
+                        </a>
+                    </dd>
+                </dl>
+                </div>
+            <div class="cation-middle" id="list">
+            </div>
+{#            <div class="cation-middle">#}
+{#                <dl class="cation-list">#}
+{#                    <span style="text-align: center;display: block;"><img src="/static/img/onekey/more.png" id='more' data="更多"></span>#}
+{#                </dl>#}
+{#            </div>#}
+            <div class="cation-middle" >
+                <span>
+                <button id="showModel" style="background: #2e7cf6">下一步</button>
+                <button onclick="showViewModal()">预览</button>
+                <button id ="back" style="background: #ee1308;">取消</button>
+                </span>
+            </div>
+        </div>
+        <!-- 模态框 -->
+        <div id="modal" class="modal" >
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h4 style="width: 100%;text-align: center">好友筛选结果</h4>
+                    <!--<span class="close">×</span>-->
+                </header>
+                <div class="modal-body">
+                    <dl id = "search_num" style="height: 70px;text-align: center;margin-left: 0px;">
+                        <img src="/static/img/onekey/loading.gif" style="text-align: center">
+                    </dl>
+{#                    <dl>#}
+{#                        <p style="line-height: 35px;width: 90%;">根据微信规则，好友请求单日上限25个，如果超过25个，系统自动按每天25个号逐天请求添加，累计添加不超过1000个。#}
+{#                    </p>#}
+{#                    </dl>#}
+                    <dl style="margin-top: 20px;">
+                    <label style="float: left; font-size: 14px; line-height: 45px;"><strong>我只需添加:</strong></label>
+                    <input type="text" name="add_num" id ="add_num" placeholder="1000" onkeyup="value=this.value.replace(/\D|^0+/g,'')" onafterpaste="value=this.value.replace(/\D|^0+/g,'')" style="margin-left: 55px;float: left;"></input>
+                    <p  style="float: left;padding-left: 10px;line-height: 45px;">个<p style="color: red;line-height: 45px;">（0~1000个好友）</p></p>
+                    </dl>
+{#                    <span style="display: block;text-align: center" id="tip">#}
+{#                    </span>#}
+                    <dl>
+                    <label style="font-size: 14px;line-height: 45px;"><strong>好友群体名称:</strong></label>
+                    <input type="text" name="task_name" id="task_name" placeholder="任务1" style="margin-left: 36px;"></input>
+                    </dl>
+                </div>
+                <footer class="modal-footer" style="display: block;">
+                    <span>
+                    <button id="sure" style="margin-right: 40px;">下一步</button>
+                    <button id="cancel" style="background: #ff2f64">取消</button>
+                    </span>
+                </footer>
+            </div>
+        </div>
+         <!-- 模态框1 -->
+        <div id="modal1" class="modal" >
+            <div class="modal-content" style="width: 35%">
+                <header class="modal-header">
+                    <h4 style="width: 100%;text-align: center">好友筛选结果</h4>
+                </header>
+                <div class="modal-body">
+                    <dl  style="height: 70px; margin-left: 0px;text-align: center;">
+                        <span style="display: inline-block;text-align: center;">
+                        <img src="/static/img/onekey/wancheng.png" alt="" style="float:left;" >
+                        <p style="float: left;font-size: 16px;line-height: 67px;">根据您的条件筛选&nbsp&nbsp<strong  style="font-size: 25px;color: red;">0</strong>&nbsp&nbsp个好友</p >
+                        </span>
+                    </dl>
+                    <dl>
+                        <p style="line-height: 35px;width: 90%;text-align: center;">无符合条件记录，请重新设置筛选条件。
+                    </p>
+                    </dl>
+                </div>
+                <footer class="modal-footer" style="display: block;">
+                    <span>
+                    <button id="clo">确定</button>
+                    </span>
+                </footer>
+            </div>
+        </div>
+
+           <!-- 模态框 -->
+        <div id="viewmodal" class="modal"  >
+            <div class="modal-content" style="width: 850px">
+                  <!-- 头-->
+                <header class="modal-header" style="width: 850px">
+                    <h4 style="margin-left:380px;">结果预览</h4>
+                    <span class="close" onclick="offViewModal()" >×</span>
+                </header>
+
+                <div class="modal-body" id="table" style="width: 850px " >
+                </div>
+                  <!-- 头-->
+                <footer class="modal-footer" style="display: block;" style="width: 850px">
+                    <span>
+                    <button id="batch" style="margin-right: 40px;" onclick="batchNext()" >换一批</button>
+                    <button id="viewback" style="background: #ff2f64" onclick="offViewModal()">返回</button>
+                    </span>
+                </footer>
+            </div>
+        </div>
+
+    </body>
+
+</html>

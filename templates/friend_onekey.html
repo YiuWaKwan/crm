@@ -1,0 +1,617 @@
+﻿<!DOCTYPE html>
+<head>
+    <title>一键加好友</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="/static/img/onekey/favicon.png">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+
+    <!-- CSS Begins
+================================================== -->
+    <!--BootStrap -->
+
+    <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <link href="/static/css/onekey/friend_onekey.css" rel="stylesheet">
+    <link href="/static/css/onekey/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+
+    <!-- Main Style -->
+    <link href="/static/css/onekey/friend_popup_20180821.css" rel="stylesheet">
+<style>
+        body .demo-class .layui-layer-title{ text-align: center;    padding: 0 80px 0 72px;}
+        body .demo-class .layui-layer-btn .layui-layer-btn0{    border-color: #dedede;
+    background-color: #f1f1f1; }
+        body .demo-class .layui-layer-btn .layui-layer-btn1{    border-color: #4898d5;
+    background-color: #2e8ded;color:#ffff}
+        #img_show img {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ddd;
+        }
+
+        #img_show img:hover {
+            -webkit-transform: scale(1.1); /*放大1.2倍*/
+            transform: scale(1.1); /*放大1.2倍*/
+            z-index: 999;
+        }
+
+        #img_show div {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .task_dialog {
+            height: 550px;
+            overflow: auto;
+        }
+
+        .file-upload-img {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            line-height: 70px;
+            text-align: center;
+            background: #f2f2f2;
+            border: 1px solid #ddd;
+            font-size: 36px;
+            color: #b0b0b0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /*隐藏默认样式*/
+        .file-button {
+            z-index: 999;
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            display: inline-block;
+            opacity: 0;
+            cursor: pointer;
+            left: 5px;
+        }
+
+        .addline {
+            width: 40px;
+            height: 2px;
+            position: absolute;
+            top: 0;
+            bottom: 28px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            background: #b0b0b0;
+        }
+
+        .addline:nth-of-type(2) {
+            transform: rotate(90deg)
+        }
+    </style>
+
+</head>
+
+    <!-- Start: Slides  -->
+    <div class="slides_wrapper">
+
+        <div class="slider_home">
+            <!-- Start: Slider 1  -->
+            <div class="single_slider" style="background:url('/static/img/onekey/banner.png') repeat center;">
+            </div>
+            <!-- End: Slider 1  -->
+        </div>
+    </div>
+    <!-- End: Slider
+==================================================-->
+
+
+
+    <!-- Start: Promo Area
+==================================================-->
+    <div class="promo_area">
+        <div class="container">
+                <div class="col-xs">
+                    <ul class="promo_list">
+                        <li class="promo_list__item">
+                            <div class="promo_list_title">好友规模:<span id="f_sum"></span></div>
+                        </li>
+                    </ul>
+                </div>
+            <!-- End: row-->
+        </div>
+        <!-- End: container-->
+    </div>
+    <!-- End: Promo Area
+==================================================-->
+
+
+
+    <!-- Start: About Section
+==================================================-->
+    <section class="about-section">
+        <div class="container">
+            <!-- Start: Heading -->
+            <div class="base-header">
+                <h4>一键加好友</h4>
+                <div onclick="showTip('dataAdd')" class="base-col">
+                     <img src="/static/img/onekey/add.png" alt="" ></br>
+                     <span style="color: #808080;">粉丝库</span>
+                </div>
+                <div  class="base-col"onclick="showTip('fileAdd')" style="margin-left: 10px" data-toggle="modal"  >
+                     <img src="/static/img/onekey/wenjian.png" alt="" ></br>
+                     <span style="color: #808080;">导入号码</span>
+                 </div>
+            </div>
+
+            <!-- End:  heading -->
+            <div id="title_ing"><h3>进行中</h3><a href="javascript:js_ing();" class="about_ing"><span class="about_ing_more">更多</span><img src="/static/img/onekey/next.png" alt="" ></a></div>
+            <div class="row">
+                <div class="about_bottom_warp_ing">
+                </div>
+                <!--End: about_bottom_warp -->
+            </div>
+            <div id="title_pause"><h3>暂停</h3><a href="javascript:js_pause();" style="float: right;width: 80px" class="about_ing"><span class="about_ing_more">更多</span><img src="/static/img/onekey/next.png" alt="" ></a></div>
+            <div class="row">
+                <div class="about_bottom_warp_pause">
+                    <div class="col">
+                    </div>
+                </div>
+                <!--End: about_bottom_warp -->
+            </div>
+            <!--End: row-->
+            <div id="title_com"><h3>已完成</h3><a href="javascript:js_com();" class="about_com"><span class="about_com_more">更多</span><img src="/static/img/onekey/next.png" alt="" ></a></div>
+            <div class="row">
+                <div class="about_bottom_warp_com">
+                </div>
+                <!--End: about_bottom_warp -->
+                </div>
+            </div>
+        <!-- End: container-->
+        </div>
+    </section>
+
+<!--弹出框-->
+<!--弹出框-->
+<div  id="viewmodal" class="containerpopup" style="display:none; ">
+        <input id="taskId"    value=""  type="hidden"/>
+        <input id="exectime"  value=""  type="hidden"/>
+        <input id="sendtime"  value=""  type="hidden"/>
+        <input id="passtime"  value=""  type="hidden"/>
+    <div  class="popupmodal center"  >
+    <!--标题栏-->
+   <div class="popupmodal-header">
+       <span class="center tasktitle" id="taskSpan"></span>
+       <span class="close" onclick="offViewModal()">×</span>
+    </div>
+
+    <div class="popupmodal-body ;">
+       <div style="display: block;margin-top: 14px ">
+          <div class="logbox"  >
+              <div class="tdiv" style="width: 50%;display: inline-block"><img src="/static/img/onekey/popup/jindu.png" style="vertical-align: middle;"><span class="tspan">好友进度</span></div>
+              <div class="cronerimg"><img  id="jingxing" src="/static/img/onekey/popup/icon_putout.png"></div>
+              <div  class="containerDiv" >
+                   <div class="childDiv width">
+                       <div class="logimg"><img class="jinduimg" src="/static/img/onekey/popup/renwuliang.png"></div>
+                       <p class="logtxtp">好友添加量</p>
+                       <p class="lognump" id="taskcnt">800</p>
+                   </div>
+                   <div class="childDiv"><img   src="/static/img/onekey/popup/line.png"></div>
+                   <div class="childDiv width">
+                       <div class="logimg"><img  class="jinduimg" src="/static/img/onekey/popup/fasong.png"></div>
+                       <p class="logtxtp">已发起请求</p>
+                       <p class="lognump" id="sendcnt"></p>
+                   </div>
+                   <div class="childDiv"><img src="/static/img/onekey/popup/line.png"></div>
+                   <div class="childDiv width">
+                       <div class="logimg"><img class="jinduimg" src="/static/img/onekey/popup/tongguo.png"></div>
+                       <p class="logtxtp">已通过好友</p>
+                       <p  class="lognump" id="passcnt"></p>
+                   </div>
+              </div>
+              <div  id="chatresult" >
+                  <!--<iframe src=""></iframe>-->
+              </div>
+          </div>
+
+          <div class="miaosubox" >
+                <div style="max-height: 45%">
+                    <div class="tdiv"><img src="/static/img/onekey/popup/miaoshu.png" style="vertical-align: middle;"><span class="tspan">好友描述</span></div>
+                    <table class="popup_about_table" border="0"  cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td min-width= "5%" style="width: 30px" ><div class="popup_about_para">区域:</div></td>
+                            <td style="width: 40%" class="tb_line"><div class="popup_about_para1" id="addrDiv"></div></td>
+                            <td min-width= "5%" style="width: 30px"><div class="popup_about_para">行业:</div></td>
+                            <td style="width: 42%" class="tb_line"><div class="popup_about_para1" id="tmtDiv"></div></td>
+                        </tr>
+                         <tr>
+                            <td min-width= "5%" ><div class="popup_about_para">职业:</div></td>
+                            <td style="width: 40%" class="tb_line"><div class="popup_about_para1" id="jobDiv"></div></td>
+                            <td min-width= "5%"><div class="popup_about_para">性别:</div></td>
+                            <td style="width: 42%" class="tb_line"><div class="popup_about_para1" id="sexDiv"></div></td>
+                        </tr>
+                        <tr>
+                            <td min-width= "5%" ><div class="popup_about_para">年龄:</div></td>
+                            <td style="width: 40%" class="tb_line"><div class="popup_about_para1" id="ageDiv"></div></td>
+                            <td min-width= "5%"><div class="popup_about_para">标签:</div></td>
+                            <td style="width: 42%" class="tb_line"><div class="popup_about_para1" id="flagDiv"></div></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div >
+                    <div class="tdiv"><img src="/static/img/onekey/popup/jiahaoyou.png" style="vertical-align: middle;"><span class="tspan">好友添加</span></div>
+                      <table class="popup_about_table tianjia" border="0"  cellspacing="0" cellpadding="0" >
+                        <tr>
+                            <td min-width="5%" ><div class="popup_about_para liangduan">好&nbsp友&nbsp添&nbsp加&nbsp到:</div></td>
+                            <td style="width:80%" class="tb_line">
+                                <div class="popup_about_para1" >
+                                    <span style="display: inline-block;margin:0;"><img id="headpic" class="headpimg" src="/static/img/onekey/popup/touxiang.png" ></span>
+                                    <span style="display: inline-block">
+                                           <span style="margin:0;font-weight:bold;color:#0c0c0c" id="nicheng"> </span>
+                                           <p style="margin:0;" ><span>微信号:</span><span id="addAddrDiv"></span></p>
+                                    </span>
+                                </div>
+                            </td>
+                         </tr>
+                         <tr>
+                            <td min-width= "5%" ><div class="popup_about_para liangduan">好友添加时间:</div></td>
+                            <td style="width: 80%" class="tb_line"><div class="popup_about_para1" id="addTimeDiv"></div></td>
+                         </tr>
+                        <tr>
+                            <td min-width= "5%" ><div class="popup_about_para liangduan">好&nbsp友&nbsp招&nbsp呼&nbsp语:</div></td>
+                            <td style="width: 80%" class="tb_line"><div class="popup_about_para1" id="greetDiv"></div></td>
+                        </tr>
+                    </table>
+                </div>
+          </div>
+       </div>
+
+        <div class="remarkbox" >
+            <div class="tdiv"><img src="/static/img/onekey/popup/beizhu.png" style="vertical-align: middle;"><span class="tspan">任务状态</span></div>
+            <input class="remark-p" id="remarkDiv" disabled="disabled"  type="text"/>
+
+        </div>
+    </div>
+    <!--按钮-->
+     <div class="popupmodal-footer footer-center">
+         <span  class="footer-center">
+         <input type="button" id="pauseOrstart" class="button btncl1" onclick="change_task(0)" value="暂停"></input>
+         <input type="button" id="stopTask" class="button btncl2" onclick="change_task(1)" value="终止"></input>
+         <input type="button"  class="button btncl3"  value="返回" onclick="offViewModal()"></input>
+         </span>
+     </div>
+  </div>
+</div>
+<!--addFriend-->
+<div class="modal fade" id="Modal_addFriend" tabindex="-1" role="dialog" aria-labelledby="Modal_addFriend"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="card card-primary task_dialog">
+                <div class="card-header">
+                    <h4 class="card-title" style="  min-height: 25px;    font-size: 18px">好友添加</h4>
+                </div>
+                <div class="card-body" style="    min-height: 480px;">
+                    <!--main-->
+                    <div class="container" style=" width: 750px;">
+                        <div class="row clearfix">
+                            <div class="col-md-7 column">
+                                <!--过滤-->
+                                <div class="container" style="  max-width: 332px; margin: 0;">
+                                    <div class="row clearfix">
+                                        <div class="input-group">
+                                            <input id="filter_AF" type="text" class="form-control" placeholder="Search">
+                                            <div class="input-group-prepend">
+                                                <button class="btn btn-primary"
+                                                        onclick="filterAction('filter_AF','addFriend')"><i
+                                                        class="fa fa-search"></i></button>
+                                                <button class="btn btn-primary"
+                                                        onclick="filterAction('filter_AF','addFriend','1')"><i
+                                                        class="fa fa-undo"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <section class="content" style="padding: 0px; height: 400px;overflow-y: auto;">
+                                    <div style="margin-top:20px;">
+                                        <div class="card">
+                                            <table class="table table-striped" id="addFriend" style="margin-bottom: 0px;    height: 300px;">
+                                            </table>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <div class="col-md-5 column">
+                                <h2 class="text-info text-center" style="font-size: 25px">添加好友设置</h2>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa  fa-phone  fa-lg"></i></span>
+                                         <input id="sayHi" type="text" class="form-control" placeholder="招呼术语" maxlength="20">
+                                    </div>
+                                </div>
+                                <div class="form-group" style="padding-top:10px;">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <label>目标号码</label>
+                                        </div>
+                                    </div>
+                                    <textarea id="wxIdList" class="form-control" rows="7"
+                                              placeholder="文件内容例如：&#10;18612345678 &#10;18812345678" disabled="disabled"></textarea>
+                                </div>
+                                <input type="file" id="fileImport" accept="text/plain"
+                                       onchange="fileImport(this.files)"/>
+                                <img id="img_tip" src="/static/img/onekey/icon_tip.png" style=" width: 14px;height: 14px;margin: 2px;"/>
+                                <span style="line-height: 3;opacity: 0.7; "id="tip">文件支持txt格式，上限<strong>1000</strong>条</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--main end-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="quit()">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick="createWxTask('addFriend')">创建</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<!-- ./wrapper -->
+<script src="/static/js/common.js"></script>
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<script src="/static/plugins/onekey/bootstrap.min.js"></script>
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script src="/static/plugins/onekey/friend_onekey.js"></script>
+<script src="/static/plugins/onekey/friend_popup.js"></script>
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<script src="/static/js/jQuery/jquery.ui.widget.js"></script>
+<script src="/static/js/jQuery/jquery.fileupload.js"></script>
+<script src="/static/plugins/onekey/lib/layer.js"></script>
+<script>
+
+    var load_flag = '0';//导入标识
+    function showTip(type) {
+        if(type == 'dataAdd'){
+            if(sessionStorage.getItem("data_first_flag")=='0'){
+                layer.confirm('批量添加好友需要微信号：<br />' +
+                    '1. 注册时间超过半年<br />' +
+                    '2. 绑定银行卡\n<br />' +
+                    '<strong style="color: red;">不满足条件微信号进行批量添加可能会面临封号风险！</strong>请确定是否继续？', {skin:'demo-class',
+                      title:'注意',
+                      btn: ['返回','继续'], //按钮
+                      closeBtn:0,
+                    }, function(){layer.close(layer.index);
+                    console.log('1')
+                    }, function(){
+                          sessionStorage.setItem("data_first_flag","1");
+                          addFriend();
+                          console.log('2')
+                    });
+            }else{
+                      addFriend();
+            }
+        }else if (type=='fileAdd'){
+            if(sessionStorage.getItem("file_first_flag")=='0'){
+                layer.confirm('批量添加好友需要微信号：<br />' +
+                    '1. 注册时间超过半年<br />' +
+                    '2. 绑定银行卡<br />' +
+                    '<strong style="color: red;">不满足条件微信号进行批量添加可能会面临封号风险！</strong>请确定是否继续？', {skin:'demo-class',
+                      title:'注意',
+                      btn: ['返回 ','继续'], //按钮
+                      closeBtn:0,
+                    }, function(){layer.close(layer.index);
+                    }, function(){
+                        sessionStorage.setItem("file_first_flag","1");
+                        console.log(sessionStorage.getItem("data_first_flag"))
+                        layer.close(layer.index);
+                        $('#Modal_addFriend').modal('show');
+                        wxAccountInfoQuery("addFriend")
+                    });
+            }else {
+                    $('#Modal_addFriend').modal('show');
+                    wxAccountInfoQuery("addFriend")
+            }
+        }
+    }
+    function quit() {
+        document.getElementById('sayHi').value='';
+        document.getElementById('fileImport').value='';
+        $('#wxIdList').html('');
+        document.getElementById('tip').innerHTML='文件支持txt格式，上限<strong>1000</strong>条';
+        document.getElementById('img_tip').src="/static/img/onekey/icon_tip.png"
+        load_flag = '0'
+    }
+          function filterAction(type, businame, undo) {
+        undo = typeof undo !== 'undefined' ? undo : "-1";
+        var filter = $("#" + type).val();
+        if (filter != "") {
+            wxAccountInfoQuery(businame, 'filter', filter)
+        }
+        if (undo == "1") {
+            wxAccountInfoQuery(businame)
+        }
+    }
+       function createWxTask(type) {
+        var index = layer.load(2, {shade: [0.1,'#798187']});
+           createValueString = "";
+        $('input[name="' + type + '"]:checked').each(function () {
+            createValueString = $(this).val() + ',' + createValueString
+        });
+        wx_id_str = "";
+        $('input[name="' + type + '"]:checked').each(function () {
+            wx_id_str = $(this).val().split(',')[1];
+        });
+            sayHi = document.getElementById('sayHi').value;
+            wxIdList = document.getElementById('wxIdList').value;
+            if (sayHi == "") {
+                layer.close(index);
+                alert("请完善招呼术语")
+            } else if (wxIdList == "") {
+                layer.close(index);
+                if(load_flag == '1'){
+                    alert("文件有效号码为0个")
+                }else {
+                    alert("请先导入文件")
+                }
+            } else if(wx_id_str==""){
+                layer.close(index);
+                alert("请先选择微信");
+            }
+            else {
+                $.ajax({
+                       url:"/task_exist/",
+                       type:"POST",
+                       cache: 'false',
+                       dataType: 'json',
+                       data:{'wx_id':wx_id_str},
+                    success:function (data) {
+                           {#console.log(data[0])#}
+                           {#console.log(data[0].type)#}
+                        if(data[0].type!='0'){
+                            layer.close(index);
+                            alert('请终止当前微信进行中的任务')
+                        }else{
+                $.ajax({
+                    url: "{% url 'commitTaskByFile' %}",
+                    type: "POST",
+                    dataType:'json',
+                    data: {
+                        "createTaskValue": createValueString,
+                        "sayHi": sayHi,
+                        "wxIdList": wxIdList,
+                    },
+                    success: function (data) {
+                        severcheck(data);
+                        console.log(data);
+                        if (data['status'] == 1) {
+                            layer.close(index);
+                            document.location.reload();
+                        }
+                        else {
+                            layer.close(index);
+                            alert("添加好友任务下发失败")
+                        }
+                    }
+                })
+                            }
+                    }
+           });
+            }
+
+    }
+       function createTaskClear() {
+        queryWxTask(1, checkType = 'Normal');
+    }
+        function isNumber(value) {
+        var patrn = /^(-)?\d+(\.\d+)?$/;
+        if (patrn.exec(value) == null || value == "") {
+            return false
+        } else {
+            return true
+        }
+    }
+     function wxAccountInfoQuery(type, option, filterReg) {
+        option = typeof option !== 'undefined' ? option : 'Normal';
+        filterReg = typeof filterReg !== 'undefined' ? filterReg : "";
+        $.ajax({
+            url: "/wxAccountInfoQuery",
+            type: "GET",
+            data: {},
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data) {
+                    var tempHtml = "<thead><tr>";
+                    tempHtml += "<th></th>";
+                    tempHtml += "<th>头像</th><th>微信号</th><th>微信昵称</th></tr><thead><tbody>";
+                    for (key in data) {
+                        if (isNumber(key)) {
+                            var checkAccountValue = data[key]["head_picture"] + ',' + data[key]["wx_id"] + ','
+                                    + data[key]["groupId"] + ',' +  data[key]["wx_login_id"] + data[key]["wx_name"];
+                            if (filterReg != "") {
+                                if (checkAccountValue.search(filterReg) == -1) {
+                                    continue;
+                                }
+                            }
+
+                            tempHtml += '<tr><td style="line-height:35px"><input type="radio"  name="' + type + '" value="' + checkAccountValue + '"/></td>';
+                            tempHtml += "<td><img style=\"height:35px;width:35px;\" src='" + data[key]["head_picture"] + "' class='img-circle' /></td>";
+                            tempHtml += "<td> <span title='" + data[key]["wx_login_id"] + "' style='display:inline-block;width:110px;line-height: 35px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>" + data[key]["wx_login_id"] + "</td>";
+                            tempHtml += "<td style='line-height: 35px;'>" + data[key]["wx_name"] + "</td>";
+                            tempHtml += "</tr>";
+                        }
+                    }
+                    tempHtml += "</tbody>";
+                    $("#" + type).html(tempHtml);
+
+                    $(("[type='checkbox']")).iCheck({
+                        checkboxClass: 'icheckbox_square-blue',
+                        radioClass: 'iradio_square-blue'
+                    });
+
+                    //全选
+                    $("#" + type + "0").on('ifChecked', function (event) {
+                        $('input[name="' + type + '"]').iCheck('check');
+                    });
+
+                    //反选
+                    $("#" + type + "0").on('ifUnchecked', function (event) {
+                        $('input[name="' + type + '"]').iCheck('uncheck');
+                    });
+                }
+            }
+        })
+    }
+
+     function isPoneAvailable(phone) {
+                var myreg=/^[1][0-9]{10}$/;
+                if (!myreg.test(phone)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        function fileImport() {
+            //获取读取我文件的File对象
+            load_flag ='1';
+            num=0;
+            phoneExist = [];
+            var selectedFile = document.getElementById('fileImport').files[0];
+            var name = selectedFile.name;//读取选中文件的文件名
+            var size = selectedFile.size;//读取选中文件的大小
+            if (size > 5 * 1024 * 1024) {
+                document.getElementById('tip').innerHTML="文件(" + name + ")大于5MB";
+                document.getElementById('img_tip').src="/static/img/onekey/icon_fail.png";
+                return false
+            }
+
+            var reader = new FileReader();//这是核心,读取操作就是由它完成.
+            reader.readAsText(selectedFile);//读取文件的内容,也可以读取文件的URL
+            reader.onload = function () {
+                //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+
+                phones = this.result.replace(/\r/g,"").split('\n');
+                for(x in phones){
+                    if(phones[x].length==11&&isPoneAvailable(phones[x])&&phoneExist.indexOf(phones[x])<0){
+                        phoneExist.push(phones[x]);
+                        $("#wxIdList").append((phones[x]+'\n'));
+                        num++;
+                    }else{
+                        continue;
+                    }
+                }
+                document.getElementById('tip').innerHTML='上传成功，有效号码<strong style="color:red">'+num+'</strong>个';
+                document.getElementById('img_tip').src="/static/img/onekey/icon_right.png"
+
+            }
+        }
+
+</script>
+</html>

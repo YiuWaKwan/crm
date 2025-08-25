@@ -1,0 +1,92 @@
+<!doctype html>
+
+<div class="panel chooseFriends" ng-init="init_choose()">
+    <div class="mask"></div>
+    <div class="contentPanel">
+        <div class="contentBody">
+            <div class="dialog_title tac"><label class="cw">选择群好友</label><a ng-click="isHide_cF()"><span class="dialog_close"></span></a></div>
+            <div class="dialog_bar tar"><a class="btn_blue" ng-click="confirm()">确认</a></div>
+            <div class="dialog_content">
+                <div class="query_bar ib_c">
+                    <div><label>昵称：</label><input ng-model="$parent.friend_nickname" type="text" placeholder="请输入昵称"></div>
+                    <div class="ib_c" style="margin-right: 45px;">
+                        <div><label>地区：</label></div>
+                        <div style="width: 110px" id="regionSelect" class="jqSelect"></div>
+                    </div>
+                    <div><label>备注：</label><input ng-model="$parent.friend_remark" type="text" placeholder="请输入备注"></div>
+                    <div><label>标签：</label><input ng-model="$parent.friend_flag" type="text" placeholder="请输入关键词"></div>
+                    <div style="margin-right: 0;float: right;">
+                        <a class="btn_blue" ng-click="queryTrigger()">查询</a>
+                        <a class="btn_white" ng-click="reset()">重置</a>
+                    </div>
+                </div>
+                <div class="tips_bar">
+                    <div><span class="tips_choose">已选择<span class="choose_count" ng-bind="$parent.temp_receive_wxIds.length">100</span>个好友</span><a class="choose_clear" ng-click="clearFriends()">清空</a></div>
+                </div>
+                <div class="dataList">
+                    <div class="datagrid mt15">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td width="40px"><label><input disabled type="checkbox"></label></td>
+                                    <td width="16%">好友头像</td>
+                                    <td width="16%">好友昵称</td>
+                                    <td width="16%">地区</td>
+                                    <td width="16%">备注</td>
+                                    <td width="">标签</td>
+                                </tr>
+                            </thead>
+                            <tbody id="gridbody">
+                                <tr ng-repeat="a in $parent.dataList">
+                                    <td><input style="cursor: pointer;" type="checkbox" ng-checked="isContain(a[0])" ng-click="check($event,a[0],a[1])"></td>
+                                    <td><img class="head_picture" src="[[ a[5]?a[5]:'/static/img/__.jpg' ]]"></td>
+                                    <td><span ng-bind="a[1]">奔跑的猪</span></td>
+                                    <td><span ng-bind="a[2]">上海</span></td>
+                                    <td><span ng-bind="a[3]">蠢猪</span></td>
+                                    <td class="friends_flag">
+                                        <span ng-repeat="aa in a[4].split(',')"><span ng-bind="aa"></span></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="no_data_tips"></div>
+                    </div>
+                </div>
+                <div class="mt10 pd30">
+                    <div id="pageBox"></div>
+                </div>
+            </div>
+            <div class="dialog_msg" id="clear_choose"><span class="choose_msg">已经清除所有已勾选好友</span></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+{% comment %}    $(function () {
+        var regionSelect= $("#regionSelect").jqSelect({
+          option:[//选项数据
+              {label:"请选择",value:0},
+              {label:"选项1",value:6},
+              {label:"选项21",value:1},
+              {label:"选项31",value:2},
+              {label:"选项41",value:3},
+              {label:"选项51",value:4},
+              {label:"选项61",value:5}
+          ],
+          onChange:function(res){//选择框值变化返回结果
+              if(res=="")regionSelect.setResult("0");
+              console.log(res)
+          }
+      });
+      regionSelect.setResult(["0"]);
+
+    }){% endcomment %}
+
+{% comment %}    $('#pageBox').paging({
+        pageNum: 1, // 初始页码
+        pageTotal: 1, //总页数
+        callback: function(page) { // 回调函数
+            console.log(page);
+        }
+    }){% endcomment %}
+</script>

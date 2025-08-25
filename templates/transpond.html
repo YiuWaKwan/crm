@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>转发管理</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/static/dist/css/ionicons.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+
+
+  <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+
+ <!--  <link rel="stylesheet" href="/static/dist/css/bootstrap-tagsinput.css">-->
+
+  <!-- Select2 -->
+  <link rel="stylesheet" href="/static/plugins/select2/select2.min.css">
+
+<link rel="stylesheet" href="/static/tooltipster/tooltipster.bundle.min.css" />
+ <!-- 图片放大css-->
+<link rel="stylesheet" href="/static/css/imgSize.css" />
+  <!-- Theme style 放最下面，否则有些插件显示样式会不统一-->
+  <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+      <style type="text/css">
+.select2-selection__clear{
+    display: none;
+}
+
+</style>
+    <style type="text/css">
+    .select2-container--default  .select2-selection--single{
+      height:40px;
+      line-height: 40px;
+    }
+</style>
+</head>
+
+
+<body class="hold-transition sidebar-mini">
+<section class="content">
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+      <div class="input-group-append col-2">
+        <span class="input-group-text"><i class="fa fa-group  fa-lg"></i></span>
+        <select id="wxMainIdSearch" class="form-control select2 select2-hidden-accessible"  tabindex="-1" aria-hidden="true">
+            <option selected="selected"  value="" >请选择主号</option>
+            {% for  key, value in wxMainList %}
+            <option value={{value}}>{{key}}</option>
+            {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-1"> <button class="btn btn-primary" onclick="init(1)"><i class="fa fa-search"></i> 查询</button></div>
+
+    </div>
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+        <button class="btn btn-app " onclick="toEditInfo('add')" ><i class="fa fa-plus"></i> 添加</button>
+        <button class="btn btn-app " onclick="toEditInfo('edit')" ><i class="fa fa-edit"></i> 编辑</button>
+        <button class="btn btn-app " onclick="del()" ><i class="fa fa-trash"></i> 删除</button>
+    </div>
+</section>
+<!-- Main content -->
+ <section class="content">
+<div class="col-md-12" style="margin-top:20px;">
+	<div class="card">
+        <div class="card-body p-0">
+           <table class="table table-striped">
+               <thead>
+                <tr>
+                  <th><input type="checkbox" id="allItem" name="allItem" value=""/></th>
+                  <th style='text-align:center;'>头像</th>
+                  <th style='text-align:center;'>主号</th>
+				  <th style='text-align:center;'>群</th>
+				  <th style='text-align:center;'>是否生效</th>
+				  <th style='text-align:center;'>状态</th>
+
+                </tr>
+                </thead>
+              <tbody id="tableBody">
+
+             </tbody>
+           </table>
+
+         </div><!-- /.card-body -->
+    </div>
+    <div id="example2_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="row">
+                <div class="col-2">
+                    <div class="dataTables_info" id="userListTable_info" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-1">
+                    <div class="dataTables_info" id="div_pageSize" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-2">
+                    <div class="dataTables_info input-group" id="div_button" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-7" style="margin-top: 8px;">
+                    <div class="dataTables_paginate" id="userListTable_paginate">
+                    <ul class="pagination" id="page"></ul>
+                    </div>
+                </div>
+            </div>
+     </div>
+</div>
+ </section>
+<!-- 编辑好友信息 -->
+<div class="modal fade" id="infoModal" style="width:100%">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+        <div class="row">
+          <!-- left column -->
+          <div class="col-md-12">
+           <div class="card card-primary"  >
+              <div class="card-header">
+                <h3 class="card-title">编辑规则</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" id="form1">
+                  <input type="hidden" id="seq">
+                <div class="card-body">
+
+                  <div class="input-group" >
+                    <div class="col-md-2">
+                    <label for="type" style="margin-top:7px;">主号<span style="color:red"> * </span></label>&nbsp;
+                     </div>
+                    <div class="col-md-10">
+                        <select id="wxMainId" style="width:60%" class="form-control select2 select2-hidden-accessible"  onchange="chooseWxMainId()"  tabindex="-1" aria-hidden="true">
+                        <option selected="selected"  value="" >请选择主号</option>
+                        {% for  key, value in wxMainList %}
+                        <option value={{value}}>{{key}}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                  </div>
+
+                <div class="input-group" >
+                    <div class="col-md-2">
+                    <label for="type" style="margin-top:7px;">群<span style="color:red"> * </span></label>&nbsp;
+                     </div>
+                    <div class="col-md-10">
+                        <select style="width:100%" id="groupId" class="form-control select2 select2-hidden-accessible"  data-placeholder="请选择群" tabindex="-1" aria-hidden="true">
+                         </select>
+                    </div>
+                  </div>
+
+                 <div class="input-group" >
+                    <div class="col-md-2">
+                    <label for="type" style="margin-top:7px;">好友<span style="color:red"> * </span></label>&nbsp;
+                     </div>
+                    <div class="col-md-10">
+
+                    <select id="friendWxIds" class="form-control select2" multiple="multiple" data-placeholder="请选择好友"
+                          style="width: 100%;"> </select>
+                    </div>
+                  </div>
+
+
+                  </select>
+                </div>
+
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <div align="right" >
+                      <button type="button"  onclick="saveEditInfo()"  class="btn btn-primary">保存</button>
+                      <button type="button" class="btn btn-info" onclick="cancelEditInfo()">取消</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+</body>
+<!-- ./wrapper -->
+<!-- jQuery -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<!-- SlimScroll -->
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/static/plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/static/dist/js/demo.js"></script>
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<!-- page script -->
+<script src="/static/page.js"></script>
+<!--<script src="/static/dist/js/bootstrap-tagsinput.js"></script>-->
+<script src="/static/js/common.js"></script>
+<!-- Select2 -->
+<script src="/static/plugins/select2/select2.full.min.js"></script>
+
+<script type="text/javascript" src="/static/tooltipster/tooltipster.bundle.min.js"></script>
+
+<script src="/static/plugins/jquery/jquery.cookie.js"></script>
+<script src="/static/layer/layer.js"></script>
+<script>
+    $(function () {
+         init(1);
+         //初始化select2
+         $('.select2').select2({
+              allowClear: true, //是否允许清空选中
+         });
+      }
+    );
+
+    function init(pageIndex){
+        var pageSize = $("#pageSize_value").val();
+        pageSize=filterNull(pageSize,5);
+         var wxMainIdSearchVal=$("#wxMainIdSearch option:selected").val();
+        $.ajax({
+        type: 'get',
+        url: '/WXCRM/transpondData',
+        data: {"type":"getList",
+                "pageIndex": pageIndex,
+                "pageSize": pageSize,
+                "wxMainIdSearch":wxMainIdSearchVal
+        },
+        success: function (res) {
+            severcheck(res);
+            res = parseJson(res);
+            var list = res.pageList;
+            var count=res.count;
+            var tableHead = "", html = "",temp="";
+            $("#tableBody").empty();
+            if(list!=null&&list.length>0) {
+                for (var i = 0; i < list.length; i++) {
+                        var headImg=list[i][4];
+                        if(!headImg||headImg=='null'){
+                            headImg="\\static\\img\\headImg\\null.jpg";
+                        }
+                        temp += "<tr id='"+list[i][0]+"tr"+"'><td ><input type='checkbox' class='minimal' name='infoItem'  value='"+list[i][0]+"'/></td>";
+                        temp += "<td style='text-align:center;'  ><img class='imgSizeZoom img-circle' width='30px' height='30px' src='"+ headImg +"'  onerror=\"imgerror(this)\" /></td>";//头像
+                        temp += "<td style='text-align:center;'><span class='js-title' title='"+list[i][5]+"' style='display:inline-block;width:200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>"+ filterNull(list[i][5],"")+"</span></td>";//主号
+                        temp += "<td style='text-align:center;'><span class='js-title' title='"+list[i][6]+"' style='display:inline-block;width:200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>"+ filterNull(list[i][6],"")+"</span></td>";//群
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][2],"") + "</td>";//是否生效
+                        temp += "<td style='text-align:center;'>" + filterNull(list[i][3],"") + "</td>";//状态
+                        temp += "<td style='display:none'>" + filterNull(list[i][7],"") + "</td>";//主号id
+                        temp += "<td style='display:none'>" + filterNull(list[i][1],"") + "</td>";//群ID
+                        temp += "<td style='display:none'>" + filterNull(list[i][8],"") + "</td>";//好友ids
+                        temp +=  "</tr>";//操作
+                }
+            $("#tableBody").append(temp);
+
+			$('.js-title').tooltipster();
+
+            $(("[type='checkbox']")).iCheck({
+                checkboxClass : 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
+            });
+              //图片放大
+            $('.imgSizeZoom').hover(function(){
+            $(this).addClass('hoverZoom')
+            },function(){
+            $(this).removeClass('hoverZoom')
+            });
+
+            //全选
+            $('#allItem').on('ifChecked', function(event){
+                $("input").iCheck('check');
+            });
+            //反选
+            $('#allItem').on('ifUnchecked', function(event){
+                $("input").iCheck('uncheck');
+            });
+
+             var pages=Math.ceil(count/pageSize);
+             page={'total':count,'pageNum':pageIndex,'pages':pages};
+             setPage(page,"init","show");
+
+
+            }
+        }
+     });
+    }
+    function imgerror(img){
+        img.src="\\static\\img\\headImg\\null.jpg";
+        img.onerror=null;   //控制不要一直跳动
+    }
+    function toEditInfo(editType){
+        if(editType=='add'){
+            clearEditInfo();
+        }else{
+            var selectItems= $("input:checkbox[name='infoItem']:checked");
+            if(selectItems.length!=1){
+                alert("请选择唯一的一条数据后，再进行编辑");
+                return;
+            }
+            var id=selectItems.val()
+            var itemTr=$("#"+id+"tr");
+            $("#seq").val(id);
+            $("#wxMainId").select2('val',itemTr.children("td").eq(6).text());
+            chooseWxMainId();
+            $("#groupId").select2('val',itemTr.children("td").eq(7).text());
+            //初始化已有好友数据
+            var flagObj = $("#friendWxIds").select2();
+            var optionVal = [];
+            var optionValStr=itemTr.children("td").eq(8).text()
+            optionVal=optionValStr.split(",");
+            flagObj.val(optionVal).trigger("change");
+        }
+         $("#infoModal").modal("show");
+    }
+function clearEditInfo(){
+        $("#seq").val('');
+        $("#wxMainId").select2('val','');
+        $("#groupId").select2('val','');
+        $("#friendWxIds").val(['']).trigger("change");
+}
+function saveEditInfo(){
+    var seq=$("#seq").val();
+     var wxMainId=$("#wxMainId").select2("val");
+     var groupId=$("#groupId").select2("val");
+     var friendWxIds=$("#friendWxIds").select2("val");
+    if(!wxMainId||!groupId||!friendWxIds){
+        alert("请完善必填信息！")
+        return;
+    }
+    $.ajax({
+        type: 'POST',
+        traditional:true,//传递数组
+        url: '/WXCRM/transpondData/',
+        data: {"type":"saveInfo",
+                "seq":$("#seq").val(),
+                "wxMainId":wxMainId,
+                "groupId":groupId,
+                "friendWxIds":friendWxIds
+        },
+        success: function (res) {
+            severcheck(res);
+            res = parseJson(res);
+             var result=res.result;
+             if(result==1){
+                init(1);
+                $("#infoModal").modal("hide");
+                clearEditInfo();
+             }else{
+                 alert('保存失败')
+             }
+        }
+        });
+}
+
+function  cancelEditInfo() {
+        $("#infoModal").modal("hide");
+        clearEditInfo();
+}
+
+function del() {
+
+        if (!$("input[type='checkbox']").is(':checked')) {
+            alert("请选择要删除的条目！");
+            return;
+        }else{
+            var msg = "您确定要删除吗？\n\n请确认！";
+            if (confirm(msg)!=true){
+                return ;
+            }
+        }
+        var itemIds = '';
+        var selectItems= $("input:checkbox[name='infoItem']:checked");
+        selectItems.each(function (k) {
+            if (k == 0) {
+                itemIds = $(this).val();
+            } else {
+                itemIds += ',' + $(this).val();
+            }
+        })
+        $.ajax({
+            type: "POST",
+            url:  '/WXCRM/transpondData/',
+            headers: {"X-CSRFToken": $.cookie('csrftoken')},
+            data: {"type":"delInfo","itemIds": itemIds},
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                var result=res.result;
+                if (result == 1) {
+                    alert("删除成功！");
+                    init(1);
+                    return;
+                }
+            },
+            error: function () {
+                alert('删除失败！')
+            }
+        });
+    }
+
+function chooseWxMainId(){
+        var wxMainIdVal=$("#wxMainId option:selected").val();
+        if(wxMainIdVal){
+            $.ajax({
+            type: 'get',
+            url: '/WXCRM/transpondData',
+            async:false,
+            data: {"type":"getGroupAndFriendData","wxMainId":wxMainIdVal},
+            success: function (res) {
+                severcheck(res);
+                res = parseJson(res);
+                var list = res.friendList;
+                var optionHtml="";
+                if (list != null && list.length > 0) {
+                    for(var i=0;i<list.length;i++){
+                        optionHtml+="<option value='"+list[i][0]+"'>"+list[i][1]+"</option>";
+                    }
+                    $("#friendWxIds").html(optionHtml);
+                }
+
+                var grouplist = res.groupList;
+                var groupOptionHtml="";
+                if (grouplist != null && grouplist.length > 0) {
+                    for(var i=0;i<grouplist.length;i++){
+                        groupOptionHtml+="<option selected=\"selected\"  value=\"\" >请选择主号</option>";
+                        groupOptionHtml+="<option value='"+grouplist[i][0]+"'>"+grouplist[i][1]+"</option>";
+                    }
+                    $("#groupId").html(groupOptionHtml);
+                }
+            }
+            });
+        }else{
+                $("#groupId").html("");
+                $("#friendWxIds").html("");
+        }
+        //切换主号后需要清空好友及群
+        $("#groupId").select2('val','');
+        $("#friendWxIds").val(['']).trigger("change");
+}
+
+
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<div class="box">
+    <div class="box_hd with_border">
+        <div class="title_wrap">
+            <div class="title">详细信息</div>
+        </div>
+    </div>
+    <div class="box_bd">
+        <div ng-if="currentContact" user-profile-directive data-user="currentContact">
+            <div class="profile">
+                <div class="avatar">
+                    <img class="img" src="[[currentContact.pic_big]]" >
+                </div>
+
+                <div class="nickname_area">
+                    <h4 class="nickname" ng-bind-html="currentContact.NickName"></h4>
+                    <i ng-class="{'web_wechat_women': currentContact.Sex == 2, 'web_wechat_men': currentContact.Sex == 1}"></i>
+                </div>
+
+                <p class="signature">[[currentContact.signature]]</p>
+
+                <div class="meta_area">
+                    <div class="meta_item" ng-if="user.isGroup == 0">
+                        <label class="label">备注：</label>
+                        <p class="value" contenteditable="true" ng-bind-html="currentContact.RemarkName" ng-blur="modifyWx('remark',currentContact.wx_id)"></p>
+                    </div>
+                    <div class="meta_item" ng-if="user.Province">
+                        <label class="label" for="">地区：</label>
+                        <p class="value">[[currentContact.zone]]</p>
+                    </div>
+                </div>
+
+                <div class="action_area">
+                    <a class="button" ng-click="chatShow(currentContact)">发消息</a>
+                </div>
+            </div>
+        </div>
+        <div ng-if="!currentContact" class="empty">
+            <i class="web_wechat_no_contect"></i>
+        </div>
+    </div>
+</div>

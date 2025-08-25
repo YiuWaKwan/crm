@@ -1,0 +1,79 @@
+<!--单聊-->
+<div class="profile_mini" ng-if="profileContact.isGroup==0">
+    <div class="profile_mini_hd">
+        <div class="avatar">
+            <img class="img" src="[[profileContact.pic_big]]" alt="">
+        </div>
+    </div>
+    <div class="profile_mini_bd">
+        <div class="nickname_area">
+            <!--BEGIN 发起聊天-->
+            <a class="opt" href="javascript:;"
+               ng-if="profileContact.isContact() && !profileContact.isBrandContact()"
+               ng-click="chat(profileContact.NickName)">
+                <i class="web_wechat_tab_launch-chat"></i>
+            </a>
+            <!--END 发起聊天-->
+            <h4 ng-if="!isShowSendBox" class="nickname" ng-bind-html="profileContact.NickName"></h4>
+            <i ng-if="!isShowSendBox" ng-class="{'web_wechat_women': profileContact.Sex == 2, 'web_wechat_men': profileContact.Sex == 1}"></i>
+            <h4 ng-if="isShowSendBox" class="nickname">添加好友</h4>
+        </div>
+        <div class="meta_area" ng-if="!isShowSendBox">
+            <div class="meta_item" ng-if="!isOfficialUser">
+                <label class="label" for="">备注：</label>
+                <p class="value J_Text" contenteditable ng-bind-html="profileContact.RemarkName" ng-blur="save()"></p>
+            </div>
+            <div class="meta_item" ng-if="profileContact.zone">
+                <label class="label" for="">地区：</label>
+                <p class="value">[[profileContact.zone]]</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--群聊-->
+<div class="profile_mini" ng-if="profileContact.isGroup==1">
+    <div class="profile_mini_hd">
+        <div class="avatar">
+            <img class="img" src="[[groupMemberInfoExt.headPic]]" alt="">
+        </div>
+    </div>
+    <div class="profile_mini_bd">
+        <div class="nickname_area">
+            <h4 class="nickname" ng-bind-html="groupMemberInfoExt.group_member_name"></h4>
+        </div>
+        <div class="meta_area">
+            <div class="meta_item">
+                <label class="label" for="">姓名：</label>
+                    <p class="value">[[groupMemberInfoExt.real_name]]</p>
+                </p>
+            </div>
+            <div class="meta_item" >
+                <label class="label" for="">性别：</label>
+                <p class="value">[[groupMemberInfoExt.sexName]]</p>
+            </div>
+            <div class="meta_item" >
+                <label class="label" for="">生日：</label>
+                <p class="value">[[groupMemberInfoExt.birthday]]</p>
+            </div>
+            <div class="meta_item" >
+                <label class="label" for="">地区：</label>
+                <p class="value" style="width:120px;" title="[[groupMemberInfoExt.areaFullName]]">[[groupMemberInfoExt.areaFullName]]</p>
+            </div>
+            <div class="meta_item" >
+                <label class="label" for="">地址：</label>
+                <p class="value" style="width:120px;" title="[[groupMemberInfoExt.address]]">[[groupMemberInfoExt.address]]</p>
+            </div>
+            <div class="meta_item">
+                <label class="label" for="">标签：</label>
+                 <div ng-repeat="flag in groupMemberFlags track by $index">
+                    <label class="label" style="color:#5897fb" for="">[[flag.flagName]]</label>
+                 </div>
+            </div>
+
+            <div class="dialog_ft" style="cursor: pointer;">
+            <a class="button" style="width:40px;height:17px;background-color:#0cb570;color:white" href="javascript:editMemberInfo([[groupMemberInfoExt]],[[groupMemberFlags]]);">打标</a>
+        </div>
+        </div>
+    </div>
+</div>

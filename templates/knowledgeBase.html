@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>knowledeg base</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/static/dist/css/ionicons.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap4.css">
+    <!--link rel="stylesheet" href="/static/plugins/datatables/jquery.dataTables.css"-->
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+
+    <style>
+        .callout{
+            margin-top:20px;
+            margin-left: 7.5px;
+            margin-right: 7.5px;
+            border-color: rgba(230, 247, 255, 1);
+            background-color: rgba(230, 247, 255, 1)
+        }
+    </style>
+</head>
+
+
+<body class="hold-transition sidebar-mini">
+<!-- Main content -->
+<section class="content">
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+        <div class="input-group col-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-search fa-lg"></i></span>
+            </div>
+            <input id="keyWord" type="text" class="form-control" placeholder="关键词">
+        </div>
+
+        <div class="input-group-append col-2">
+            <span class="input-group-text"><i class="fa fa-user fa-lg"></i></span>
+            <select id="creatorId" class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true">
+                <option selected="selected" value="0">创建人</option>
+                {% for  key, value in creatorList %}
+                    <option value={{ key }}>{{ value }}</option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        <div class="col-auto">
+            <button class="btn btn-primary" onclick="queryKnowledge(1,'Search')"><i class="fa fa-search"></i> 查询</button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-default" onclick="retSerach()"><i class="fa fa-refresh"></i> 重置</button>
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px;margin-left:1px;">
+        <div class="col-auto">
+            <button class="btn btn-primary" onclick="questionAction('add','')"><i class="fa fa-plus"></i> 新增</button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-default" onclick="batchInsert()"></i> 批量导入</button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-danger" id="batchDel" onclick="batchDel('1','0')" disabled="disabled"></i> 批量删除</button>
+        </div>
+    </div>
+    <div class="callout" id="tipsCheck">
+        <p><img id="u107_img" class="img " src="/static/img/knowledgeBase/u107.png" style="width:14px;height:14px">
+            已选择
+            <a style="color: #1890FF;" id="checkNum">0 条</a>
+            知识条目
+            <a onclick="clearCheck()" style="color: #1890FF;cursor: pointer;">清空</a>
+        </p>
+    </div>
+</section>
+
+<section class="content">
+    <div class="col-md-12" style="margin-top:20px;">
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" id="cbItem" name="cbItem" value=""/></th>
+                        <th>知识分类</th>
+                        <th>问题</th>
+                        <th>建议回答</th>
+                        <th>创建人</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="knowledgeList">
+
+                    </tbody>
+                </table>
+            </div><!-- /.card-body -->
+        </div>
+        <div id="example2_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+            <div class="row">
+                <div class="col-2">
+                    <div class="dataTables_info" id="userListTable_info" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-1">
+                    <div class="dataTables_info" id="div_pageSize" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-2">
+                    <div class="dataTables_info input-group" id="div_button" role="status" aria-live="polite"></div>
+                </div>
+                <div class="col-7" style="margin-top: 8px;">
+                    <div class="dataTables_paginate" id="userListTable_paginate">
+                        <ul class="pagination" id="page"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--modal start-->
+
+
+<!--question modal-->
+<div class="modal fade" id="Modal_question" tabindex="-1" role="dialog" aria-labelledby="Modal_question"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h4 class="card-title" id="qaHead" align="center"></h4>
+                </div>
+
+               <div class="row" style="margin-top: 10px;">
+                    <div class="col-2" style="text-align: right">
+                        <label>分类<font color="red">*</font></label>
+                    </div>
+                    <div class="col-9">
+                        <textarea id="qusClass" class="form-control" rows="1" placeholder="请输入(最长输入10个汉字)"></textarea>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="col-2" style="text-align: right">
+                        <label>问题<font color="red">*</font></label>
+                    </div>
+                    <div class="col-9">
+                        <textarea id="qusName" class="form-control" rows="2" placeholder="请输入(最长输入255个汉字)"></textarea>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 10px;">
+                    <div class="col-2" style="text-align: right">
+                        <label>建议回答<font color="red">*</font></label>
+                    </div>
+                    <div class="col-9">
+                        <textarea id="qusAns" class="form-control" rows="4" placeholder="请输入(最长输入255个汉字)"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer" id="qaBar" style="margin-right:5%">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="qsActCo" >确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{#batchInsert#}
+<!--question modal-->
+<div class="modal fade" id="Modal_batchInsert" tabindex="-1" role="dialog" aria-labelledby="Modal_batchInsert"
+     aria-hidden="true">
+{#    <div class="modal-dialog modal-lg">#}
+    <div class="modal-dialog" style="width:50%">
+        <div class="modal-content">
+            <div class="card card-primary" style="box-shadow:None">
+                <div class="card-header" style="background: #fff;}">
+                    <h4 class="card-title"  align="center" style="color: black">导入文件</h4>
+                    <hr style="height:0.5px;border:none;border-top:1px solid #bdc0ae;" />
+                </div>
+
+                <div class="row" style="margin-top:20px;margin-left:1px;">
+                    <div class="col-lg-2"></div>
+                    <div class="col-2">
+                        <a>文件选择</a>
+                    </div>
+                    <div class="col-3">
+                        <input type="file" id="fileImport" accept=".csv" onchange="fileImport(this.files)"/>
+                    </div>
+              </div>
+
+
+
+                <div class="row" style="margin-top:20px;margin-left:1px;">
+                    <div class="col-lg-2"></div>
+                    <div class="col-2">
+                        <a>文件模板</a>
+                    </div>
+                    <div class="col-3">
+                        <a style=" color:#666; font-size:5%;">知识库导入模板.csv</a>
+                    </div>
+                    <div class="col-2">
+                        <a href="/static/file/知识库导入模板.csv" download="知识库导入模板.csv"><i class="fa fa-cloud-download"></i>下载</a>
+                    </div>
+
+                </div>
+
+                <div class="row" style="margin-top:20px;margin-left:1px;display:none" id ="proBar">
+                    <div class="col-lg-2"></div>
+                    <div class="col-2">
+                        <a>执行进度</a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="progress progress-striped" style="margin-top:  6px; ">
+{#                            background-color: #008fff;#}
+                            <div class="progress-bar progress-bar-success" role="progressbar"
+                                 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                                 style="width: 0;" id = 'proBarValue' value="0" valueAll="0" valueFail = "0">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-2">
+                        <a id = 'proText'></a>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top:20px;margin-left:1px;">
+                    <div class="col-lg-2"></div>
+                    <div class="col-8" >
+                            <img id="img_tip" src="" style="width: 14px;height: 14px;margin: 2px; display:none"/>
+                            <span style="opacity: 0.7; display:none" id="tipShow"></span>
+                    </div>
+                </div>
+
+                <div class="modal-footer" id="qaBar" style="border-top:None">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="qsActSave" onclick="saveNewAdd('')">上传</button>
+                    <div class="col-lg-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--modal end-->
+
+</body>
+</html>
+
+<!-- ./wrapper -->
+<!-- jQuery -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<script src="/static/plugins/datatables/jquery.dataTables.js"></script>
+<script src="/static/plugins/datatables/dataTables.bootstrap4.js"></script>
+<!-- SlimScroll -->
+<script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/static/dist/js/demo.js"></script>
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+
+
+<!-- page script -->
+<script src="/static/page.js"></script>
+<!--<script src="/static/dist/js/bootstrap-tagsinput.js"></script>-->
+<script src="/static/js/common.js"></script>
+<!-- Select2 -->
+<script src="/static/plugins/select2/select2.full.min.js"></script>
+
+<script type="text/javascript" src="/static/tooltipster/tooltipster.bundle.min.js"></script>
+
+<script src="/static/plugins/jquery/jquery.cookie.js"></script>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<script>
+    $(function () {
+        function showChecked() {
+            var checkLen = 0
+            $('input[name="cbItem"]:checked').each(function () {
+                if ($(this).val() != ""){
+                    checkLen += 1
+                }
+            })
+            $('#checkNum').text(checkLen)
+            if (checkLen > 0) {
+                $("#batchDel").removeAttr("disabled");
+            }else{
+                $("#batchDel").attr("disabled","disabled");
+            }
+        }
+        function proBarMonitor() {
+            var curProValue = parseFloat($("#proBarValue").attr("value"));
+            var curProFailValue = parseFloat($("#proBarValue").attr("valueFail"));
+            var itemAllCount = parseFloat($("#proBarValue").attr("valueAll"));
+            if (itemAllCount != 0 && itemAllCount == curProFailValue + curProValue){
+                $("#proBarValue").attr("value","0");
+                $("#proBarValue").attr("valueFail","0");
+                $("#proBarValue").attr("valueAll","0");
+                alert("本批次上传完成");
+
+                document.location.reload();
+
+            }
+        }
+
+        setInterval(showChecked,200);
+        setInterval(proBarMonitor,200);
+
+        queryKnowledge(1, checkType = 'Normal');
+    });
+    function queryKnowledge(pageIndex, checkType) {
+        var pageShowNum = $("#pageSize_value option:selected").val();
+        if (pageShowNum == undefined) {
+            pageShowNum = 5
+        }
+        var creatorId = $("#creatorId option:selected").val(); // 创建者
+        var keyWord = $("#keyWord").val(); // 关键词
+        if (checkType == 'Search') {
+            if (creatorId == "0" && keyWord == "") {
+                alert("请至少选择一种查询条件")
+            }
+        }
+        $.ajax({
+            url: "{% url 'knowledgeInfoGet' %}",
+            type: "GET",
+            data: {
+                "pageIndex": pageIndex,
+                "creatorId": creatorId,
+                "keyWord": keyWord,
+                "pageShowNum": pageShowNum
+            },
+
+            success: function (data) {
+                severcheck(data);
+                data = parseJson(data);
+                if (data) {
+                    tempHtml = '';
+                    for (key in data) {
+                        if (isNumber(key)) {
+                            var seq =  data[key]["seq"];
+                            var checkValue = seq
+                            var detailInfo = data[key]["classificationName"] + '|' + data[key]["question"] + '|' + data[key]["answer"];
+                            var detailEdit = data[key]["seq"] + '|' + data[key]["classificationName"] + '|' + data[key]["question"] + '|' + data[key]["answer"];
+
+
+                            tempHtml += '<tr><td><input type=\"checkbox\" id="cbItem" name=\"cbItem\" value=\"' + checkValue + '\"/></td>';
+                            tempHtml += "<td>" + data[key]["classificationName"] + "</td>";
+                            tempHtml += "<td><span class='js-title' style='display:inline-block;width:150px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>" + "<a style=\"color: #1890FF;cursor: pointer;\" onclick='questionAction(" + "\"Search\"," + "\"" + detailInfo + "\"" + ")'>" + data[key]["question"] + "</a>" + "</span></td>";
+                            {#tempHtml += "<td>" + "<a onclick='detailInfo()'>" + data[key]["question"] + "</a>" + "</td>";#}
+                            tempHtml += "<td><span class='js-title' style='display:inline-block;width:150px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;'>" + data[key]["answer"] + "</span></td>";
+                            tempHtml += "<td>" + data[key]["viewName"] + "</td>";
+                            tempHtml += "<td>" + "<a style=\"color: #1890FF;cursor: pointer;\" onclick='questionAction(" + "\"Edit\"," + "\"" + detailEdit + "\"" + ")'>" + "编辑" + "</a>" ;
+                            tempHtml += "<a> | </a>";
+                            tempHtml += "<a style=\"color: #1890FF;cursor: pointer;\" onclick='batchDel(\"2\",\"" + seq + "\")'>" + "删除" + "</a>" ;
+                            tempHtml += "</td>";
+                            {#tempHtml += "<td>" + "handle" + "</td>";#}
+
+                            tempHtml += "</tr>";
+                        }
+
+                    }
+                    $("#knowledgeList").html(tempHtml);
+
+                    $(("[type='checkbox'][name='cbItem']")).iCheck({
+                        checkboxClass: 'icheckbox_square-blue',
+                        radioClass: 'iradio_square-blue'
+                    });
+
+                    //全选
+                    $('#cbItem').on('ifChecked', function (event) {
+                        $("input[name='cbItem']").iCheck('check');
+                    });
+                    //反选
+                    $('#cbItem').on('ifUnchecked', function (event) {
+                        $("input[name='cbItem']").iCheck('uncheck');
+                    });
+                }
+                page = {'total': data['countNum'], 'pageNum': pageIndex, 'pages': data['pageCount']}
+                setPage(page, "queryKnowledge", "show");
+            }
+        });
+    }
+    function isNumber(value) {
+        var patrn = /^(-)?\d+(\.\d+)?$/;
+        if (patrn.exec(value) == null || value == "") {
+            return false
+        } else {
+            return true
+        }
+    }
+    function clearCheck() {
+         $("input[name='cbItem']").iCheck('uncheck');
+    }
+    function retSerach() {
+        window.location.reload()
+    }
+    function questionAction(checkType,valueIn) {
+        var funcRet = false;
+        if (checkType == 'Search') {
+            $("#qaHead").text("知识条目详情");
+            $("#qaBar").attr("style","display:none;margin-right:5%");
+            {#qusClass qusName qusAns#}
+            var sValue = valueIn.split('|');
+            $('#qusClass').val(sValue[0]);
+            $("#qusClass").attr("disabled","disabled");
+            $('#qusName').val(sValue[1]);
+            $("#qusName").attr("disabled","disabled");
+            $('#qusAns').val(sValue[2]);
+            $("#qusAns").attr("disabled","disabled");
+            $("#Modal_question").modal("show");
+        }else if (checkType == 'add'){
+            $("#qaHead").text("新增知识条目");
+            $("#qaBar").attr("style","display:'block';margin-right:5%");
+            $("#qsActCo").attr("onclick","questionAction('confirm','');");
+            $("#qusClass").removeAttr("disabled");
+            $('#qusClass').val();
+            $("#qusName").removeAttr("disabled");
+            $('#qusName').val();
+            $("#qusAns").removeAttr("disabled");
+            $('#qusAns').val();
+            $("#Modal_question").modal("show");
+        }else if (checkType == 'confirm'){
+            var qusClass = $("#qusClass").val();
+            var qusName = $("#qusName").val();
+            var qusAns = $("#qusAns").val();
+            var qusClassLen = qusClass.length;
+            var qusNamesLen = qusClass.length;
+            var qusAnsLen = qusClass.length;
+            if (qusClassLen > 10 || qusNamesLen > 255 || qusAnsLen > 255) {
+                alert("编辑内容长度超出限制")
+                return
+            }
+            $.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    url: "{% url 'qsInsertConfirm' %}",
+                    data: {"actType" : 1,
+                            "actSeq": 0,
+                            "qusClass": qusClass,
+                            "qusName": qusName,
+                            "qusAns": qusAns,
+                            "batchList":''},
+                    success: function (data) {
+                       if (data['retStatus'] == 1) {
+                            alert("信息写入成功")
+                            document.location.reload();
+                        }
+                        else {
+                            alert("信息写入失败，请稍后再试")
+                        }
+                    }
+                }
+            );
+        } else  if (checkType =="Edit"){
+            $("#qaHead").text("编辑知识条目");
+            $("#qaBar").attr("style","display:'block';margin-right:5%");
+            var sValue = valueIn.split('|');
+            var seq = sValue[0];
+            var qusClass = sValue[1];
+            var qusName = sValue[2];
+            var qusAns = sValue[3];
+            $("#qsActCo").attr("onclick","questionAction('edirConfirm',\"" + seq + "\");");
+            $('#qusClass').val(qusClass);
+            $("#qusClass").removeAttr("disabled");
+            $('#qusName').val(qusName);
+            $("#qusName").removeAttr("disabled");
+            $('#qusAns').val(qusAns);
+            $("#qusAns").removeAttr("disabled");
+            $("#Modal_question").modal("show");
+        } else if (checkType =="edirConfirm") {
+            var seq = valueIn;
+            var qusClass = $("#qusClass").val();
+            var qusName = $("#qusName").val();
+            var qusAns = $("#qusAns").val();
+            var qusClassLen = qusClass.length;
+            var qusNamesLen = qusClass.length;
+            var qusAnsLen = qusClass.length;
+            if (qusClassLen > 10 || qusNamesLen > 255 || qusAnsLen > 255) {
+                alert("编辑内容长度超出限制")
+                return
+            }
+            $.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    url: "{% url 'qsInsertConfirm' %}",
+                    data: {"actType" : 2,
+                            "actSeq": seq,
+                            "qusClass": qusClass,
+                            "qusName": qusName,
+                            "qusAns": qusAns,
+                            "batchList":''},
+                    success: function (data) {
+                       if (data['retStatus'] == 1) {
+                            alert("信息编辑成功")
+                            document.location.reload();
+                        }
+                        else {
+                            alert("信息编辑失败，请稍后再试")
+                        }
+                    }
+                }
+            );
+        }else if (checkType =="batchInsert") {
+            var valueSplit = valueIn.split('^');
+            var batchList = valueSplit[1];
+            var itemCount = parseFloat(valueSplit[0]);
+            var itemAllCount = parseFloat($("#proBarValue").attr("valueAll"));
+            var hasDoneCount = 0;
+            var failDoneCount = 0;
+            $.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    url: "{% url 'qsInsertConfirm' %}",
+                    data: {"actType" : 3,
+                            "actSeq": '',
+                            "qusClass": '',
+                            "qusName": '',
+                            "qusAns": '',
+                            "batchList":batchList},
+                    success: function (data) {
+                       if (data['retStatus'] == 1) {
+                           funcRet = true;
+                           var curProValue = parseFloat($("#proBarValue").attr("value"));
+                           var valueAdd = curProValue + itemCount;
+                           var persentProc = valueAdd / itemAllCount * 100;
+                           $("#proBarValue").attr("value", valueAdd);
+                           {#var curProValue = parseFloat($("#proBarValue").attr("value"));#}
+                           $("#proBarValue").attr("style", "width:" + persentProc + "%;display:'block';");
+                           $("#proText").text(persentProc.toFixed(1) + "%");
+                           hasDoneCount = valueAdd;
+                       }else{
+                           var curProFailValue = parseFloat($("#proBarValue").attr("valueFail"));
+                           var valueAdd = curProFailValue + itemCount;
+                           $("#proBarValue").attr("valueFail", valueAdd);
+                       }
+                        $("#tipShow").text("导入总数 : " + itemAllCount +" , 导入成功总数 : "+ hasDoneCount);
+                    }
+                }
+            );
+        }
+        return funcRet;
+    }
+
+    function batchDel(actype,seqItem) {
+        if (actype == '1'){
+            var r=confirm("确认删除选中知识条目");
+            if (r==true){
+                delSeqList = ""
+                $('input[name="cbItem"]:checked').each(function () {
+                            var del_thisValue = $(this).val();
+                            if (del_thisValue){
+                                delSeqList += del_thisValue + ","
+                            }
+
+                        });
+                $.ajax({
+                            type: "GET",
+                            dataType: 'json',
+                            url: "{% url 'qsdel' %}",
+                            data: {"delSeqList": delSeqList},
+                            success: function (data) {
+                               if (data['retStatus'] == 1) {
+                                    alert("信息删除成功")
+                                    document.location.reload();
+                                }
+                                else {
+                                    alert("信息删除失败，请稍后再试")
+                                }
+                            }
+                        }
+                );
+            }
+        } else if (actype == '2'){
+                var r=confirm("确认删除选中知识条目");
+                if (r==true){
+                delSeqList = seqItem;
+
+                $.ajax({
+                            type: "GET",
+                            dataType: 'json',
+                            url: "{% url 'qsdel' %}",
+                            data: {"delSeqList": delSeqList},
+                            success: function (data) {
+                               if (data['retStatus'] == 1) {
+                                    alert("信息删除成功");
+                                    document.location.reload();
+                                }
+                                else {
+                                    alert("信息删除失败，请稍后再试");
+                                }
+                            }
+                        }
+                );
+            }
+        }
+    }
+    function batchInsert() {
+        $("#proBarValue").attr("valueAll","0");
+        $("#proBarValue").attr("value","0");
+        $("#tipShow").text("");
+        $("#img_tip").attr("style","width: 14px;height: 14px;margin: 2px;display:none;");
+        $("#proBar").attr("style","margin-top:20px;margin-left:1px;display:none");
+        $("#qsActSave").attr("onclick","saveNewAdd([]);");
+
+        var file = $("#fileImport")
+        file.after(file.clone().val(""));
+        file.remove();
+        $("#Modal_batchInsert").modal("show");
+    }
+    function fileImport() {
+            //获取读取我文件的File对象
+            var load_flag ='1';
+            var num=0;
+            var phoneExist = [];
+            var selectedFile = document.getElementById('fileImport').files[0];
+            var name = selectedFile.name;//读取选中文件的文件名
+            var size = selectedFile.size;//读取选中文件的大小
+            if (size > 2 * 1024 * 1024) {
+                $('#tipShow').append("文件(" + name + ")大于2MB",上传失败);
+                return false
+            }
+
+            var reader = new FileReader();//这是核心,读取操作就是由它完成.
+            reader.readAsText(selectedFile,'gb2312');//读取文件的内容,也可以读取文件的URL
+            reader.onload = function () {
+                //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+
+                var resultUpload = this.result.split('\n');
+                var itemValue = "";
+                var itemValueLen = 0;
+                var itemInvalueLen = 0;
+                for(itemSeq in resultUpload){
+                    if ( resultUpload[itemSeq].indexOf("知识分类") != -1 || resultUpload[itemSeq] == "" ||  resultUpload[itemSeq].length <= 3 ) {
+                        continue
+                    }
+                    itemList = resultUpload[itemSeq].split(',');
+                    var itemListLen = itemList.length;
+                    var qsClass = itemList[0].replace('\n','');
+                    var qsClassLen = qsClass.length;
+                    var qsQues = itemList[1].replace('\n','');
+                    var qsQuesLen = qsQues.length;
+                    var qsAns = itemList[2].replace('\n','');
+                    var qsAnsLen = qsAns.length;
+                    if (itemListLen > 3 || qsClassLen > 10 || qsQuesLen > 10 ||  qsAnsLen > 10) {
+                        itemInvalueLen ++;
+                    } else {
+                        itemValueLen ++;
+                        itemValueTmp = qsClass + "|" + qsQues + "|" + qsAns + ','
+                        itemValue += itemValueTmp.replace(/\s+/g,"");;
+                    }
+                }
+                if ( itemValueLen == 0 && itemInvalueLen == 0){
+                    $("#qsActSave").attr("disabled","disabled");
+                    $("#img_tip").attr("src","/static/img/knowledgeBase/icon_fail.png");
+                    $("#img_tip").show();
+                    $("#tipShow").text("文件格式错误，请按照模板要求重新导入");
+                    $("#tipShow").show();
+                }else {
+                    $("#proBarValue").attr("valueAll","0");
+                    $("#proBarValue").attr("value","0");
+                    $("#proBarValue").attr("style", "width:'0%';display:'block';");
+                    $("#proText").text("0%");
+                    $("#qsActSave").removeAttr("disabled");
+                    $("#img_tip").attr("src","/static/img/knowledgeBase/icon_right.png");
+                    $("#img_tip").show();
+                    $("#tipShow").text("有效信息总数:"+ itemValueLen + ',' + "无效信息总数:" + itemInvalueLen);
+                    $("#tipShow").show();
+                    $("#qsActSave").attr("onclick","saveNewAdd(\"" + itemValue +"\");");
+                }
+
+            }
+        }
+        function saveNewAdd(addItem) {
+            if (addItem.length == 0) {
+                alert("请上传文件");
+                return
+            }
+            if (addItem == "hasAdd"){
+                alert("请更新输入文件");
+                return
+            }
+
+            var r=confirm("确认上传数据");
+            if (r==true){
+
+                $("#qsActSave").attr("onclick","saveNewAdd('hasAdd');");
+
+                $("#proBar").attr("style","margin-top:20px;margin-left:1px;display:'block';");
+                var addItemListLen = addItem.length - 1;
+                var addItemListMod  = addItem.substring(0, addItemListLen);
+                var addItemList = addItemListMod.split(',');
+                var totalLenAll = addItemList.length;
+                $("#proBarValue").attr("valueAll",totalLenAll);
+                var taskList = [];
+                var insertValue = "";
+                var runNum = 0;
+                var gapNum = 200;
+                {#组装任务信息#}
+                for(addItem in addItemList){
+                    if (addItemList[addItem].length != 0 ) {
+                        runNum ++;
+                        insertValue += addItemList[addItem] + ',';
+                        if (runNum % gapNum == 0) {
+                            taskList.push(insertValue);
+                            insertValue = "";
+                            runNum = 0;
+                        }
+                    }
+                }
+                if (runNum > 0) {
+                    taskList.push(insertValue);
+                }
+                for (x in taskList){
+                    var addItem = taskList[x];
+                    var addItemListLen = addItem.length - 1;
+                    var addItemListMod  = addItem.substring(0, addItemListLen);
+                    var addItemList = addItemListMod.split(',');
+                    var totalLenCur = addItemList.length;
+                    var valueIn = totalLenCur + '^' + addItemListMod
+                    questionAction("batchInsert", valueIn);
+                    }
+                }
+        }
+</script>

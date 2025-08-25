@@ -1,0 +1,42 @@
+html,body{
+    height: 98%;
+    width: 98%;
+    background: #f9f9f9;
+}
+ul {
+    width: 90%;
+    list-style-type: none;
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+
+li a {
+    height: 35px;
+    #border: 1px solid #f4f4f5;
+    display: block;
+    color: #666666;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+li  a img{
+    float: left;
+    padding: 0 10px 0 20px;
+}
+li  a p{
+    margin: 4px;
+    float: left;
+    text-align: center
+}
+
+/* 鼠标移动到选项上修改背景颜色 */
+li a:hover {
+    box-shadow: 0 0px 26px rgba(125, 147, 178, 0.22);
+    webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    cursor:pointer
+    }

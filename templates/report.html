@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据概览</title>
+    <script type="text/javascript" src="/static/plugins/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/lib/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/report/report.js"></script>
+    <link href="/static/css/report.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <div style="margin: auto;position: absolute;top: 0;right:0;bottom: 0;left: 0; width: 100%;height: 65%">
+        <div style="float: left;padding-left:4%;width: 22%">
+            <ul>
+                <li><a id="datareport"><img src="/static/img/report/data.png"><p>数据概览</p></a></li>
+                <li><a id="wechatreport"><img src="/static/img/report/chat.png"><p>聊天数据分析</p></a></li>
+                <li><a id="wgreport"><img src="/static/img/report/group.png"><p>微信群分析</p></a></li>
+            </ul>
+        </div>
+        <div style="float:left;width: 63%;height: 100%;padding: 2%;background: #fff;border: 1px solid #e5e5e5;border-radius: 4px;" id="report"></div>
+    </div>
+</body>
+</html>
